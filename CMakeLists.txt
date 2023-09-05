@@ -110,7 +110,7 @@ message("Found ${QT_MAJOR_VERSION}")
 
 if (BUILD_DESKTOP_APP)
     find_package(Qt${QT_MAJOR_VERSION} CONFIG REQUIRED COMPONENTS Gui Widgets Svg)
-    find_package(KF${KF_MAJOR_VERSION} ${KF5_DEP_VERSION} REQUIRED COMPONENTS WidgetsAddons)
+    find_package(KF${KF_MAJOR_VERSION} ${KF5_DEP_VERSION} REQUIRED COMPONENTS WidgetsAddons TextEditor)
     if (USE_QT_WEBENGINE)
         find_package(Qt${QT_MAJOR_VERSION} REQUIRED COMPONENTS WebEngineWidgets)
         add_compile_definitions(USE_WEB_ENGINE=1)
@@ -119,7 +119,6 @@ if (BUILD_DESKTOP_APP)
         find_package(Qt${QT_MAJOR_VERSION} REQUIRED COMPONENTS DBus)
     endif()
 endif()
-
 
 if (COMPILE_TESTS)
     enable_testing()
