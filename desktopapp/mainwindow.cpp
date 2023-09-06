@@ -178,7 +178,9 @@ MainWindow::MainWindow(NodeStorage& sharedNodeStorage,
 
     ui.namespaceFilter->installEventFilter(this);
     ui.packagesFilter->installEventFilter(this);
-    ui.actionSearch->setShortcuts({Qt::Key_Find, Qt::CTRL + Qt::Key_F, Qt::Key_Slash});
+    ui.actionSearch->setShortcuts({Qt::Key_Find,
+                                   static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) + static_cast<int>(Qt::Key_F)),
+                                   Qt::Key_Slash});
 
     ui.mainSplitter->setUndoManager(d_undoManager_p);
     d_undoManager_p->createDock(this);
@@ -197,7 +199,8 @@ MainWindow::MainWindow(NodeStorage& sharedNodeStorage,
     ui.graphLoadProgress->setMinimum(static_cast<int>(Codethink::lvtqtc::GraphicsScene::GraphLoadProgress::Start));
     ui.graphLoadProgress->setMaximum(static_cast<int>(Codethink::lvtqtc::GraphicsScene::GraphLoadProgress::Done));
 
-    ui.actionUndo->setShortcuts({Qt::Key_Undo, Qt::CTRL + Qt::Key_Z});
+    ui.actionUndo->setShortcuts(
+        {Qt::Key_Undo, static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) + static_cast<int>(Qt::Key_Z))});
     connect(ui.actionUndo, &QAction::triggered, this, &MainWindow::triggerUndo);
     addAction(ui.actionUndo);
 
