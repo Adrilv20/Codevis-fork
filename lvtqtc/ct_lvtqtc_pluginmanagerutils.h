@@ -37,17 +37,16 @@ class LVTQTC_EXPORT PluginManagerQtUtils {
     createPluginTreeWidgetHandler(lvtplg::PluginManager *pm, std::string const& id, GraphicsScene *gs);
 
   private:
-    static PluginTreeItemHandler createPluginTreeItemHandler(QTreeView *treeView,
-                                                             QStandardItemModel *treeModel,
-                                                             QStandardItem *item,
-                                                             GraphicsScene *gs);
+      static PluginTreeItemHandler
+      createPluginTreeItemHandler(lvtplg::PluginManager *pm, QTreeView *treeView, QStandardItemModel *treeModel, QStandardItem *item, GraphicsScene *gs);
 
-    static PluginTreeItemClickedActionHandler createPluginTreeItemClickedActionHandler(QTreeView *treeView,
-                                                                                       QStandardItemModel *treeModel,
-                                                                                       QStandardItem *item,
-                                                                                       GraphicsScene *gs);
+      static PluginTreeItemClickedActionHandler createPluginTreeItemClickedActionHandler(lvtplg::PluginManager *pm,
+                                                                                         QTreeView *treeView,
+                                                                                         QStandardItemModel *treeModel,
+                                                                                         QStandardItem *item,
+                                                                                         GraphicsScene *gs);
 
-    static PluginGraphicsViewHandler createPluginGraphicsViewHandler(GraphicsScene *gs);
+      static PluginGraphicsViewHandler createPluginGraphicsViewHandler(GraphicsScene *gs);
 };
 
 } // namespace Codethink::lvtqtc

@@ -123,18 +123,17 @@ void PluginManager::callHooksTeardownPlugin()
                                                           }});
 }
 
-void PluginManager::callHooksContextMenu(getAllEntitiesInCurrentView_f const& getAllEntitiesInCurrentView,
-                                         getEntityByQualifiedName_f const& getEntityByQualifiedName,
-                                         registerContextMenu_f const& registerContextMenu)
+void PluginManager::callHooksContextMenu(getAllEntitiesInCurrentView_f const &getAllEntitiesInCurrentView,
+                                         getEntityByQualifiedName_f const &getEntityByQualifiedName,
+                                         getEdgeByQualifiedName_f const &getEdgeByQualifiedName,
+                                         registerContextMenu_f const &registerContextMenu)
 {
     auto getPluginData = [this](auto&& id) {
         return this->getPluginData(id);
     };
-    callAllHooks<hookGraphicsViewContextMenu_f>("hookGraphicsViewContextMenu",
-                                                PluginContextMenuHandler{getPluginData,
-                                                                         getAllEntitiesInCurrentView,
-                                                                         getEntityByQualifiedName,
-                                                                         registerContextMenu});
+    callAllHooks<hookGraphicsViewContextMenu_f>(
+        "hookGraphicsViewContextMenu",
+        PluginContextMenuHandler{getPluginData, getAllEntitiesInCurrentView, getEntityByQualifiedName, registerContextMenu, getEdgeByQualifiedName});
 }
 
 void PluginManager::callHooksSetupDockWidget(createPluginDock_f const& createPluginDock,
