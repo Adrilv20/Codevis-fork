@@ -1837,33 +1837,53 @@ void GraphicsScene::populateMenu(QMenu& menu, QMenu *debugMenu)
             }
             return createWrappedEntityFromLakosEntity(e);
         };
+        auto getEdgeByQualifiedName = [this](std::string const& fromQualifiedName,
+                                             std::string const& toQualifiedName) -> std::optional<Edge> {
+            auto *fromEntity = entityByQualifiedName(fromQualifiedName);
+            if (!fromEntity) {
+                return std::nullopt;
+            }
+            auto *toEntity = entityByQualifiedName(toQualifiedName);
+            if (!toEntity) {
+                return std::nullopt;
+            }
+            return createWrappedEdgeFromLakosEntity(fromEntity, toEntity);
+        };
         using ctxMenuAction_f = PluginContextMenuHandler::ctxMenuAction_f;
-        auto registerContextMenu =
-            [this, &menu, getAllEntitiesInCurrentView, getEntityByQualifiedName](std::string const& title,
-                                                                                 ctxMenuAction_f const& userAction) {
-                auto *action = menu.addAction(QString::fromStdString(title));
-                connect(action,
-                        &QAction::triggered,
-                        this,
-                        [this, userAction, getAllEntitiesInCurrentView, getEntityByQualifiedName]() {
-                            auto getPluginData = [this](auto&& id) {
-                                auto& pm = d->pluginManager.value().get();
-                                return pm.getPluginData(id);
-                            };
-                            auto getTree = [this](std::string const& id) {
-                                auto *pm = &d->pluginManager->get();
-                                return PluginManagerQtUtils::createPluginTreeWidgetHandler(pm, id, this);
-                            };
-                            auto handler = PluginContextMenuActionHandler{getPluginData,
-                                                                          getAllEntitiesInCurrentView,
-                                                                          getEntityByQualifiedName,
-                                                                          getTree};
-                            userAction(&handler);
-                        });
-            };
+        auto registerContextMenu = [this,
+                                    &menu,
+                                    getAllEntitiesInCurrentView,
+                                    getEntityByQualifiedName,
+                                    getEdgeByQualifiedName](std::string const& title,
+                                                            ctxMenuAction_f const& userAction) {
+            auto *action = menu.addAction(QString::fromStdString(title));
+            connect(
+                action,
+                &QAction::triggered,
+                this,
+                [this, userAction, getAllEntitiesInCurrentView, getEntityByQualifiedName, getEdgeByQualifiedName]() {
+                    auto getPluginData = [this](auto&& id) {
+                        auto& pm = d->pluginManager.value().get();
+                        return pm.getPluginData(id);
+                    };
+                    auto getTree = [this](std::string const& id) {
+                        auto *pm = &d->pluginManager->get();
+                        return PluginManagerQtUtils::createPluginTreeWidgetHandler(pm, id, this);
+                    };
+                    auto handler = PluginContextMenuActionHandler{getPluginData,
+                                                                  getAllEntitiesInCurrentView,
+                                                                  getEntityByQualifiedName,
+                                                                  getTree,
+                                                                  getEdgeByQualifiedName};
+                    userAction(&handler);
+                });
+        };
 
         auto& pm = d->pluginManager.value().get();
-        pm.callHooksContextMenu(getAllEntitiesInCurrentView, getEntityByQualifiedName, registerContextMenu);
+        pm.callHooksContextMenu(getAllEntitiesInCurrentView,
+                                getEntityByQualifiedName,
+                                getEdgeByQualifiedName,
+                                registerContextMenu);
     }
 
     if (d->showTransitive) {
