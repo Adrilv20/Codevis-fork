@@ -31,6 +31,7 @@ struct PluginData {
 
     ToggleTestEntitiesState toggleState = ToggleTestEntitiesState::VISIBLE;
     std::vector<std::string> toggledTestEntities;
+    std::vector<std::tuple<std::string, std::string>> testOnlyEdges;
 };
 
 template<typename Handler_t>
@@ -51,23 +52,46 @@ void hookTeardownPlugin(PluginSetupHandler *handler)
     delete data;
 }
 
-void toggleTestEntities(PluginContextMenuActionHandler *handler)
+void toggleMergeTestEntities(PluginContextMenuActionHandler *handler)
 {
     auto *pluginData = getPluginData(handler);
     if (pluginData->toggleState == ToggleTestEntitiesState::VISIBLE) {
         pluginData->toggledTestEntities.clear();
         for (auto&& e : handler->getAllEntitiesInCurrentView()) {
             if (utils::string{e.getQualifiedName()}.endswith(".t")) {
+                auto& testDriver = e;
+
+                // Create test-only dependencies coming from the component
+                auto component =
+                    handler->getEntityByQualifiedName(utils::string{testDriver.getQualifiedName()}.split('.')[0]);
+                if (component) {
+                    for (auto&& dependency : testDriver.getDependencies()) {
+                        auto newEdge = handler->addEdgeByQualifiedName(component->getQualifiedName(),
+                                                                       dependency.getQualifiedName());
+                        if (newEdge) {
+                            newEdge->setColor(Color{220, 20, 0});
+                            pluginData->testOnlyEdges.emplace_back(component->getQualifiedName(),
+                                                                   dependency.getQualifiedName());
+                        }
+                    }
+                }
+
                 pluginData->toggledTestEntities.push_back(e.getQualifiedName());
                 e.unloadFromScene();
             }
         }
         pluginData->toggleState = ToggleTestEntitiesState::HIDDEN;
     } else if (pluginData->toggleState == ToggleTestEntitiesState::HIDDEN) {
+        for (auto&& [e0, e1] : pluginData->testOnlyEdges) {
+            handler->removeEdgeByQualifiedName(e0, e1);
+        }
+        pluginData->testOnlyEdges.clear();
+
         for (auto&& qName : pluginData->toggledTestEntities) {
             handler->loadEntityByQualifiedName(qName);
         }
         pluginData->toggledTestEntities.clear();
+
         pluginData->toggleState = ToggleTestEntitiesState::VISIBLE;
     }
 }
@@ -113,6 +137,6 @@ void paintBadTestComponents(PluginContextMenuActionHandler *handler)
 
 void hookGraphicsViewContextMenu(PluginContextMenuHandler *handler)
 {
-    handler->registerContextMenu("Toggle test entities", &toggleTestEntities);
+    handler->registerContextMenu("Merge test entities with their components", &toggleMergeTestEntities);
     handler->registerContextMenu("Search invalid test dependencies", &paintBadTestComponents);
 }
