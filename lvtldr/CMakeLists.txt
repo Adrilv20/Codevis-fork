@@ -56,7 +56,10 @@ add_executable(codevis_physicalloader ct_lvtldr_physicalloader.m.cpp)
 target_link_libraries(codevis_physicalloader
     Codethink::lvtldr
     ${SYSTEM_EXTRA_LIBRARIES}
+    Soci::core
+    Soci::sqlite3
     Qt::Core
+    ${SQLite3_LIBRARIES}
 )
 
 install(TARGETS codevis_physicalloader ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
