@@ -35,6 +35,7 @@ else()
     )
 endif()
 
+
 AddTargetLibrary(
     LIBRARY_NAME
         lvtclp
@@ -79,6 +80,9 @@ AddTargetLibrary(
         Qt::Core
         Python::Python
 )
+get_target_property(OUT Target LINK_LIBRARIES)
+message(STATUS ${OUT})
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set_target_properties(lvtclp
         PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${SKIP_CLANG_WARNINGS}"
