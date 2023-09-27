@@ -818,7 +818,7 @@ void NodeStorage::updateAndNotifyNodeRenameV2(LakosianNode *node)
     Q_EMIT storageChanged();
 }
 
-std::invoke_result_t<decltype(&NodeStorage::getSession), NodeStorage> NodeStorage::getSession()
+std::invoke_result_t<decltype(&DatabaseHandlerType::getSession), DatabaseHandlerType> NodeStorage::getSession()
 {
     return dynamic_cast<DatabaseHandlerType *>(d->dbHandler.get())->getSession();
 }
