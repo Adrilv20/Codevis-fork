@@ -52,14 +52,16 @@ target_include_directories(lvtldr
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../thirdparty/
 )
 
-add_executable(codevis_physicalloader ct_lvtldr_physicalloader.m.cpp)
-target_link_libraries(codevis_physicalloader
-    Codethink::lvtldr
-    ${SYSTEM_EXTRA_LIBRARIES}
-    Qt::Core
-)
-
-install(TARGETS codevis_physicalloader ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+#add_executable(codevis_physicalloader ct_lvtldr_physicalloader.m.cpp)
+#target_link_libraries(codevis_physicalloader
+#    Codethink::lvtldr
+#    ${SYSTEM_EXTRA_LIBRARIES}
+#    Soci::core
+#    Soci::sqlite3
+#    Qt::Core
+#    ${SQLite3_LIBRARIES}
+#)
+#install(TARGETS codevis_physicalloader ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 if (COMPILE_TESTS)
     add_executable(
@@ -93,6 +95,10 @@ if (COMPILE_TESTS)
         Codethink::lvtmdb
         Codethink::lvtprj
         ${SYSTEM_EXTRA_LIBRARIES}
+        Soci::core
+        Soci::sqlite3
+        Qt::Core
+        ${SQLite3_LIBRARIES}
     )
     add_test(NAME test_ct_lvtldr_nodestorage COMMAND test_ct_lvtldr_nodestorage)
 
