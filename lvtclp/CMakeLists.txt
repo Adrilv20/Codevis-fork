@@ -35,6 +35,19 @@ else()
     )
 endif()
 
+if (MSVC)
+    set(_MSVC_BASEDIR "C:/Program Files (x86)/Microsoft Visual Studio/2019")
+    if(EXISTS "$_MSVC_BASEDIR/Professional/DIA SDK/lib/amd64/diaguids.lib")
+        MESSAGE("Diaguis exists, continuing")
+    elseif(EXISTS "$_MSVC_BASEDIR/Community/DIA SDK/lib/amd64/diaguids.lib")
+        # this is a horrible hack.
+        configure_file(
+            "$_MSVC_BASEDIR/Community/DIA SDK/lib/amd64/diaguids.lib"
+            "$_MSVC_BASEDIR/Professional/DIA SDK/lib/amd64/diaguids.lib"
+             COPYONLY)
+    endif()
+endif()
+
 AddTargetLibrary(
     LIBRARY_NAME
         lvtclp
