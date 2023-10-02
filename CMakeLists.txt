@@ -114,6 +114,8 @@ if (BUILD_DESKTOP_APP)
         WidgetsAddons
         TextEditor
         XmlGui
+        NewStuffCore
+        NewStuff
         I18n
         OPTIONAL_COMPONENTS
         DocTools
