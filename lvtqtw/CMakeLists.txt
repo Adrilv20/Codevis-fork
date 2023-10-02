@@ -55,6 +55,8 @@ AddTargetLibrary(
         ${SYSTEM_EXTRA_LIBRARIES}
         KF${KF_MAJOR_VERSION}::WidgetsAddons
         KF${KF_MAJOR_VERSION}::TextEditor
+        KF${KF_MAJOR_VERSION}::NewStuffCore
+        KF${KF_MAJOR_VERSION}::NewStuffWidgets
         Codethink::lvtmdl
         Codethink::lvtclp
         Codethink::lvtqtc
