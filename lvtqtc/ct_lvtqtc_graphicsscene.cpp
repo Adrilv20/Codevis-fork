@@ -1911,7 +1911,12 @@ void GraphicsScene::populateMenu(QMenu& menu, QMenu *debugMenu)
                                                               removeEdgeByQualifiedName,
                                                               hasEdgeByQualifiedName,
                                                               runQueryOnDatabase};
-                userAction(&handler);
+
+                try {
+                    userAction(&handler);
+                } catch (std::exception& e) {
+                    Q_EMIT errorMessage(QString::fromStdString(e.what()));
+                }
             });
         };
 
