@@ -921,10 +921,17 @@ void MainWindow::changeCurrentGraphWidget(int graphTabIdx)
                 }
                 return createWrappedEdgeFromLakosEntity(fromEntity, toEntity);
             };
+            auto getProjectData = [this]() {
+                auto getSourceCodePath = [this]() {
+                    return this->d_projectFile.sourceCodePath().string();
+                };
+                return ProjectData{getSourceCodePath};
+            };
             d_pluginManager_p->callHooksMainNodeChanged(getSceneName,
                                                         getEntity,
                                                         getVisibleEntities,
-                                                        getEdgeByQualifiedName);
+                                                        getEdgeByQualifiedName,
+                                                        getProjectData);
         }
     });
 }
