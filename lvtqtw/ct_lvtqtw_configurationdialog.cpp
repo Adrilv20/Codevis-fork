@@ -210,7 +210,7 @@ void ConfigurationDialog::updatePluginInformation(lvtplg::PluginManager& pluginM
     QString categoryLabel = "Codevis Plugins";
     for (auto const& metadataFile : pluginManager.getPluginsMetadataFilePaths()) {
         plugins.push_back(KPluginMetaData{QString::fromStdString(metadataFile),
-                                          KPluginMetaData::KPluginMetaDataOption::AllowEmptyMetaData});
+                                          KPluginMetaData::KPluginMetaDataOption::DoNotAllowEmptyMetaData});
     }
 
     d->pluginWidget->clear();
