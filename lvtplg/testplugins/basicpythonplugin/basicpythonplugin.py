@@ -1,9 +1,6 @@
 PLUGIN_ID = "pyTestPlugin";
 
 
-print("Module LOADED!!!")
-
-
 class DataModel:
     pass
 

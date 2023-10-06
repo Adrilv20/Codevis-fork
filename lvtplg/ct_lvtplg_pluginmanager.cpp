@@ -105,6 +105,7 @@ PluginManager::getPluginById(std::string const& id) const
     if (!this->libraries.contains(id)) {
         return std::nullopt;
     }
+    qDebug() << "VALID OBJECT\n";
     return *this->libraries.at(id);
 }
 
