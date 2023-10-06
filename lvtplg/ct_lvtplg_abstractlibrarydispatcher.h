@@ -87,7 +87,7 @@ class AbstractLibraryDispatcher {
     KPluginMetaData metadata()
     {
         return KPluginMetaData{QString::fromStdString(this->metadataFilePath()),
-                               KPluginMetaData::KPluginMetaDataOption::AllowEmptyMetaData};
+                               KPluginMetaData::KPluginMetaDataOption::DoNotAllowEmptyMetaData};
     }
 };
 
