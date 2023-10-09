@@ -144,7 +144,7 @@ PluginEditor::~PluginEditor() = default;
 #if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
 void PluginEditor::getNewScriptFinished(const QList<KNSCore::Entry>& changedEntries)
 #else
-void PluginEditor::getNewScriptFinished(const QList<KNSCore::EntryInternal>& changedEntries)
+void PluginEditor::getNewScriptFinished(const QList<KNS3::EntryInternal>& changedEntries)
 #endif
 #else
 void PluginEditor::getNewScriptFinished(const KNSCore::Entry::List& changedEntries)
