@@ -108,6 +108,7 @@ if (BUILD_DESKTOP_APP)
     find_package(KF${KF_MAJOR_VERSION} ${KF5_DEP_VERSION} REQUIRED COMPONENTS
         Archive
         Config
+        Crash
         CoreAddons
         WidgetsAddons
         TextEditor
