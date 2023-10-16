@@ -110,6 +110,7 @@ if (BUILD_DESKTOP_APP)
     find_package(Qt${QT_MAJOR_VERSION} CONFIG REQUIRED COMPONENTS Gui Widgets Svg)
     find_package(KF${KF_MAJOR_VERSION} ${KF5_DEP_VERSION} REQUIRED COMPONENTS
         Config
+        Crash
         CoreAddons
         WidgetsAddons
         TextEditor
