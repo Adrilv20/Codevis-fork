@@ -1,4 +1,5 @@
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
+find_package(pybind11 REQUIRED)
 
 AddTargetLibrary(
   LIBRARY_NAME
@@ -6,6 +7,7 @@ AddTargetLibrary(
   SOURCES
     ct_lvtplg_pluginmanager.cpp
     ct_lvtplg_sharedlibrarydispatcher.cpp
+    ct_lvtplg_pythonmodule.cpp
     ct_lvtplg_pythonlibrarydispatcher.cpp
   QT_HEADERS
     ct_lvtplg_abstractlibrarydispatcher.h
@@ -22,11 +24,33 @@ AddTargetLibrary(
     Qt::Core
     Python::Python
 )
+target_compile_definitions(lvtplg PRIVATE AS_EMBEDDED=1)
 
 target_include_directories(lvtplg
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../thirdparty/
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>/plugin-headers/
+)
+
+add_library(pyLksPlugin
+    MODULE
+        ct_lvtplg_pythonmodule.cpp
+)
+target_compile_definitions(pyLksPlugin PRIVATE AS_MODULE=1)
+target_link_libraries(pyLksPlugin
+    PRIVATE
+        pybind11::module
+)
+
+if (WIN32)
+    set(PYMODULE_EXT ".pyd")
+else()
+    set(PYMODULE_EXT ".so")
+endif()
+set_target_properties(pyLksPlugin
+    PROPERTIES
+    PREFIX ""
+    SUFFIX ${PYMODULE_EXT}
 )
 
 find_program(CLANG_FORMAT NAMES
