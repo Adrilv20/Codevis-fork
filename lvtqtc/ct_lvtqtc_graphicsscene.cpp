@@ -1427,15 +1427,6 @@ QString GraphicsScene::fetchErrorMessage() const
 
 namespace Codethink::lvtqtc {
 
-void GraphicsScene::toggleIdentifyCycles()
-{
-    if (!d->mainEntity) {
-        return;
-    }
-
-    // TODO: identify cycles
-}
-
 std::vector<LakosEntity *>& GraphicsScene::allEntities() const
 {
     return d->verticesVec;
