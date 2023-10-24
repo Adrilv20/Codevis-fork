@@ -777,17 +777,21 @@ void MainWindow::setCurrentGraphFromString(Codethink::lvtmdl::NodeType::Enum typ
 
 void MainWindow::setCurrentGraph(const QModelIndex& idx)
 {
-    QString qualifiedName = idx.data(ModelRoles::e_QualifiedName).toString();
-    NodeType::Enum type = static_cast<NodeType::Enum>(idx.data(ModelRoles::e_NodeType).toInt());
-    currentGraphTab->setCurrentGraphTab(TabWidget::GraphInfo{qualifiedName, type});
+    // TODO: Fix This
+
+    // QString qualifiedName = idx.data(ModelRoles::e_QualifiedName).toString();
+    // NodeType::Enum type = static_cast<NodeType::Enum>(idx.data(ModelRoles::e_NodeType).toInt());
+    // currentGraphTab->setCurrentGraphTab(TabWidget::GraphInfo{qualifiedName, type});
     d_projectFile.setDirty();
 }
 
 void MainWindow::newTabRequested(const QModelIndex& idx)
 {
-    QString qualifiedName = idx.data(ModelRoles::e_QualifiedName).toString();
-    NodeType::Enum type = static_cast<NodeType::Enum>(idx.data(ModelRoles::e_NodeType).toInt());
-    currentGraphTab->openNewGraphTab(TabWidget::GraphInfo{qualifiedName, type});
+    // TODO: Fix This
+
+    // QString qualifiedName = idx.data(ModelRoles::e_QualifiedName).toString();
+    // NodeType::Enum type = static_cast<NodeType::Enum>(idx.data(ModelRoles::e_NodeType).toInt());
+    // currentGraphTab->openNewGraphTab(TabWidget::GraphInfo{qualifiedName, type});
 }
 
 void MainWindow::exportSvg()
@@ -879,10 +883,10 @@ void MainWindow::changeCurrentGraphWidget(int graphTabIdx)
         d_pluginManager_p->callHooksActiveSceneChanged(getSceneName);
     }
 
-    addGSConnection(&GraphicsScene::mainNodeChanged, &MainWindow::graphicsSceneMainNodeChanged);
+    addGSConnection(&GraphicsScene::graphLoadFinished, &MainWindow::updatePluginData);
 }
 
-void MainWindow::graphicsSceneMainNodeChanged(Codethink::lvtqtc::LakosEntity *entity)
+void MainWindow::updatePluginData()
 {
     if (!d_pluginManager_p) {
         return;
@@ -894,8 +898,10 @@ void MainWindow::graphicsSceneMainNodeChanged(Codethink::lvtqtc::LakosEntity *en
         return graphicsScene->objectName().toStdString();
     };
 
-    auto getEntity = [&entity]() {
-        return createWrappedEntityFromLakosEntity(entity);
+    auto getEntity = []() {
+        // TODO: Fix This.
+        //  This is probably "get main node" but that doesn't exists anymore.'
+        return createWrappedEntityFromLakosEntity(nullptr);
     };
 
     auto getVisibleEntities = [&graphicsScene]() {
@@ -1033,9 +1039,6 @@ void MainWindow::graphLoadStarted()
 
     QGuiApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
 
-    assert(!d_graphLoadRunning);
-    d_graphLoadRunning = true;
-
 #if KWIDGETSADDONS_VERSION >= QT_VERSION_CHECK(5, 100, 0)
     ui.topMessageWidget->clearActions();
 #else
@@ -1053,9 +1056,6 @@ void MainWindow::graphLoadFinished()
     QGuiApplication::restoreOverrideCursor();
 
     enableWindow();
-
-    assert(d_graphLoadRunning);
-    d_graphLoadRunning = false;
 
     Q_EMIT databaseIdle();
 }
