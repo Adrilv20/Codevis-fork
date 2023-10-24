@@ -179,10 +179,9 @@ bool GraphicsView::updateComponentGraph(const QString& fullyQualifiedComponentNa
 
 bool GraphicsView::updateGraph(const QString& fullyQualifiedName, lvtshr::DiagramType type)
 {
-    if (d->scene->isEditMode()) {
-        return false;
-    }
-
+    // TODO: This is probably not needed anymore.
+    // Verify how to change this with the simple version of load
+    // used by the drag and drop.
     const auto oldQualifiedName = d->fullyQualifiedName;
     d->fullyQualifiedName = fullyQualifiedName;
     d->scene->setMainNode(fullyQualifiedName, type);
@@ -637,13 +636,6 @@ void GraphicsView::dragMoveEvent(QDragMoveEvent *event)
 
 void GraphicsView::dropEvent(QDropEvent *event)
 {
-    if (!d->scene->isEditMode()) {
-        Q_EMIT errorMessage(
-            "Entities can only be dropped in the 'Edit mode'. You are currently in 'Visualization mode'.\n"
-            "You can change the mode in the tool box (side panel).");
-        return;
-    }
-
     const QString& qualName = event->mimeData()->data("codevis/qualifiedname");
     d->scene->loadEntityByQualifiedName(qualName, mapToScene(event->pos()));
 }
@@ -651,23 +643,6 @@ void GraphicsView::dropEvent(QDropEvent *event)
 GraphicsScene *GraphicsView::graphicsScene() const
 {
     return d->scene;
-}
-
-void GraphicsView::editModeTriggered()
-{
-    if (d->currentTool) {
-        d->currentTool->deactivate();
-    }
-
-    d->scene->editModeTriggered();
-}
-
-void GraphicsView::visualizationModeTriggered()
-{
-    if (d->currentTool) {
-        d->currentTool->deactivate();
-    }
-    d->scene->visualizationModeTriggered();
 }
 
 void GraphicsView::setPluginManager(Codethink::lvtplg::PluginManager& pm)
