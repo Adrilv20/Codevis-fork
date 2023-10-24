@@ -166,9 +166,6 @@ class LVTQTC_EXPORT GraphicsScene : public QGraphicsScene,
 
     Q_SIGNAL void selectedEntityChanged(Codethink::lvtqtc::LakosEntity *entity);
 
-    void updateGraph();
-    // Redraw the graph
-
     void relayout();
 
     void runLayoutAlgorithm();
@@ -198,7 +195,6 @@ class LVTQTC_EXPORT GraphicsScene : public QGraphicsScene,
     enum class CodeDbLoadStatus { Success, Error };
 
     CacheDbLoadStatus layoutFromCacheDatabase();
-    CodeDbLoadStatus requestDataFromDatabase();
     void layoutVertices();
     void finalizeLayout();
     // Finishes the layout of the entire graph.
