@@ -180,9 +180,6 @@ class LVTQTC_EXPORT GraphicsScene : public QGraphicsScene,
     Q_SIGNAL void errorMessage(const QString& error);
     Q_SIGNAL void graphLoadFinished();
 
-    void dumpScene(QGraphicsItem *item = nullptr, int indent = 0);
-    void dumpScene(const QList<QGraphicsItem *>& items);
-
     void populateMenu(QMenu& menu, QMenu *debugMenu);
 
     void fixTransitiveEdgeVisibility();
