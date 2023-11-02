@@ -51,6 +51,9 @@ class PackageObject;
 namespace lvtmdb {
 class TypeObject;
 }
+namespace lvtmdb {
+class FunctionObject;
+}
 
 namespace lvtclp {
 
@@ -94,6 +97,9 @@ struct LVTCLP_EXPORT ClpUtil {
 
     static void addUsesInImpl(lvtmdb::TypeObject *source, lvtmdb::TypeObject *target);
     // Add a uses in the impl relationship between source and target
+
+    static void addFnDependency(lvtmdb::FunctionObject *source, lvtmdb::FunctionObject *target);
+    // Add a function-to-function dependency
 
     static FileType categorisePath(const std::string& file);
     // return the FileType for the path
