@@ -16,6 +16,7 @@ option(BUILD_PLUGINS "Compile all application plugins in the plugins/ directory"
 option(USE_QT_WEBENGINE "If set, will compile using Qt Webengine (preferred) to render HTML reports" ON)
 option(ENABLE_PYTHON_PLUGINS "If set, will consider plugins implemented in Python" ON)
 option(IGNORE_BROKEN_TESTS_KDE_CI "If set, ignores some broken tests on LLVM 16 / KDE CI." ON)
+option(ENABLE_FORTRAN_SCANNER "If set, will compile lvtclp_fortran module" ON)
 
 set(QT_MIN_VERSION "5.15.2")
 set(KF5_DEP_VERSION "5.90.0")
@@ -61,7 +62,8 @@ include(GetDate)
 include(FeatureSummary)
 find_package(Doxygen)
 find_package(SQLite3 REQUIRED)
-find_package(Clang REQUIRED)
+find_package(LLVM 15 REQUIRED) # Forcing llvm version for testing purposes. TODO: Remove this
+find_package(Clang REQUIRED PATHS "${LLVM_LIBRARY_DIR}/cmake/clang/" NO_DEFAULT_PATH)
 
 set(CMAKE_AUTOMOC FALSE)
 set(CMAKE_AUTOUIC FALSE)
