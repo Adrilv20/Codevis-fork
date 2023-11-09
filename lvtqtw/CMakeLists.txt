@@ -60,6 +60,7 @@ AddTargetLibrary(
         KF${KF_MAJOR_VERSION}::Notifications
         Codethink::lvtmdl
         Codethink::lvtclp
+        Codethink::lvtclp_fortran
         Codethink::lvtqtc
         Codethink::lvtqtd
         Codethink::lvtprj
