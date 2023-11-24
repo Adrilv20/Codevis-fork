@@ -2,6 +2,11 @@
 
 ![Codevis](doc/images/mainwindow.png)
 
+## Prebuilt binaries
+
+- [**Windows (.exe)**](https://invent.kde.org/sdk/codevis/-/wikis/uploads/509d8de4abe3e8074e5d5b140279ad41/codevis-windows-x86_64.exe)
+- [**Ubuntu 22.04 (.tar.gz)**](https://invent.kde.org/sdk/codevis/-/wikis/uploads/3d638af46b04db490f31871717e303c6/codevis-ubuntu-22.04.tar.gz)
+
 [![build status](https://invent.kde.org/sdk/codevis/badges/master/pipeline.svg)](https://invent.kde.org/sdk/codevis/-/pipelines/?ref=master)
 
 Codevis is an analysis and visualization tool designed to assist in code maintenance for C++ codebases.
