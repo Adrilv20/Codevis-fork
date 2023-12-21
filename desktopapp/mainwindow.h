@@ -135,9 +135,6 @@ class MainWindow : public KXmlGuiWindow {
 
     void openProjectAction();
 
-    void loadSettings();
-    void saveSettings();
-
     [[nodiscard]] bool askCloseCurrentProject();
     [[nodiscard]] bool tryCreateEmptyProjectFile();
 
