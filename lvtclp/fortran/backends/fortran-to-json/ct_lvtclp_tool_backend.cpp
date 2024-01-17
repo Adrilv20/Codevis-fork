@@ -60,43 +60,45 @@ void recursiveParseJsonASTNode(QJsonObject const& jsonASTNode, FortranParsingCon
             // Ignore comments.
             return;
         } else if (tag == "subroutine" || tag == "function") {
-            auto functionName = jsonASTNode["name"].toString().toStdString();
-
-            FunctionObject *function = nullptr;
-            memDb.withRWLock([&]() {
-                function = memDb.getOrAddFunction(
-                    /*qualifiedName=*/functionName,
-                    /*name=*/functionName,
-                    /*signature=*/"",
-                    /*returnType=*/"",
-                    /*templateParameters=*/"",
-                    /*parent=*/nullptr);
-                auto *file = memDb.getFile(context.activeFile);
-                file->withRWLock([&] {
-                    file->addGlobalFunction(function);
-                });
-            });
-
-            auto subroutineContext = context;
-            subroutineContext.activeFunction = function;
-            visitChildrenBlocksWithContext(subroutineContext);
+            //            auto functionName = jsonASTNode["name"].toString().toStdString();
+            //
+            //            FunctionObject *function = nullptr;
+            //            memDb.withRWLock([&]() {
+            //                function = memDb.getOrAddFunction(
+            //                    /*qualifiedName=*/functionName,
+            //                    /*name=*/functionName,
+            //                    /*signature=*/"",
+            //                    /*returnType=*/"",
+            //                    /*templateParameters=*/"",
+            //                    /*parent=*/nullptr);
+            //                auto *file = memDb.getFile(context.activeFile);
+            //                file->withRWLock([&] {
+            //                    file->addGlobalFunction(function);
+            //                });
+            //            });
+            //
+            //            auto subroutineContext = context;
+            //            subroutineContext.activeFunction = function;
+            //            visitChildrenBlocksWithContext(subroutineContext);
+            visitChildrenBlocksWithContext(context);
         } else if (tag == "call") {
             if (context.activeFunction == nullptr) {
                 std::cout << "WARNING: found a function call without caller context. Will skip.\n";
                 return;
             }
             auto calleeName = jsonASTNode["function"]["value"]["value"].toString().toStdString();
+            std::cout << "Found CALL to " << calleeName << "\n";
 
-            memDb.withRWLock([&]() {
-                auto *callee = memDb.getOrAddFunction(
-                    /*qualifiedName=*/calleeName,
-                    /*name=*/calleeName,
-                    /*signature=*/"",
-                    /*returnType=*/"",
-                    /*templateParameters=*/"",
-                    /*parent=*/nullptr);
-                FunctionObject::addDependency(context.activeFunction, callee);
-            });
+            //            memDb.withRWLock([&]() {
+            //                auto *callee = memDb.getOrAddFunction(
+            //                    /*qualifiedName=*/calleeName,
+            //                    /*name=*/calleeName,
+            //                    /*signature=*/"",
+            //                    /*returnType=*/"",
+            //                    /*templateParameters=*/"",
+            //                    /*parent=*/nullptr);
+            //                FunctionObject::addDependency(context.activeFunction, callee);
+            //            });
         } else if (tag == "include") {
             auto inclusionPath = jsonASTNode["path"]["value"]["value"].toString().toStdString();
 
