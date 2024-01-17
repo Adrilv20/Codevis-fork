@@ -86,17 +86,18 @@ void recursiveParseJsonASTNode(QJsonObject const& jsonASTNode, FortranParsingCon
                 return;
             }
             auto calleeName = jsonASTNode["function"]["value"]["value"].toString().toStdString();
+            std::cout << "Found CALL to " << calleeName << "\n";
 
-            memDb.withRWLock([&]() {
-                auto *callee = memDb.getOrAddFunction(
-                    /*qualifiedName=*/calleeName,
-                    /*name=*/calleeName,
-                    /*signature=*/"",
-                    /*returnType=*/"",
-                    /*templateParameters=*/"",
-                    /*parent=*/nullptr);
-                FunctionObject::addDependency(context.activeFunction, callee);
-            });
+            //            memDb.withRWLock([&]() {
+            //                auto *callee = memDb.getOrAddFunction(
+            //                    /*qualifiedName=*/calleeName,
+            //                    /*name=*/calleeName,
+            //                    /*signature=*/"",
+            //                    /*returnType=*/"",
+            //                    /*templateParameters=*/"",
+            //                    /*parent=*/nullptr);
+            //                FunctionObject::addDependency(context.activeFunction, callee);
+            //            });
         } else if (tag == "include") {
             auto inclusionPath = jsonASTNode["path"]["value"]["value"].toString().toStdString();
 
