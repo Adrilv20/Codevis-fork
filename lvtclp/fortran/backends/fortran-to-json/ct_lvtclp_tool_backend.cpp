@@ -45,11 +45,16 @@ struct FortranParsingContext {
 
 void recursiveParseJsonASTNode(QJsonObject const& jsonASTNode, FortranParsingContext const& context, ObjectStore& memDb)
 {
-    auto visitChildrenBlocksWithContext = [&](FortranParsingContext const& context) {
-        if (jsonASTNode.contains("blocks")) {
-            auto children = jsonASTNode["blocks"].toArray();
-            for (auto e : children) {
-                recursiveParseJsonASTNode(e.toObject(), context, memDb);
+    auto visitAllChildrenWithContext = [&](FortranParsingContext const& context) {
+        for (auto const& k : jsonASTNode.keys()) {
+            if (jsonASTNode[k].isArray()) {
+                auto children = jsonASTNode[k].toArray();
+                for (auto e : children) {
+                    recursiveParseJsonASTNode(e.toObject(), context, memDb);
+                }
+            }
+            if (jsonASTNode[k].isObject()) {
+                recursiveParseJsonASTNode(jsonASTNode[k].toObject(), context, memDb);
             }
         }
     };
@@ -88,7 +93,7 @@ void recursiveParseJsonASTNode(QJsonObject const& jsonASTNode, FortranParsingCon
             });
             auto subroutineContext = context;
             subroutineContext.activeFunction = function;
-            visitChildrenBlocksWithContext(subroutineContext);
+            visitAllChildrenWithContext(subroutineContext);
         } else if (tag == "call") {
             if (context.activeFunction == nullptr) {
                 std::cout << "++ WARNING: found a function call without caller context. Will skip.\n";
@@ -122,12 +127,9 @@ void recursiveParseJsonASTNode(QJsonObject const& jsonASTNode, FortranParsingCon
             auto inclusionContext = context;
             inclusionContext.activeFile = inclusionPath;
             inclusionContext.activeDbComponentObject = inclusionComponentDbObject;
-            visitChildrenBlocksWithContext(inclusionContext);
-        } else if (tag == "statement") {
-            recursiveParseJsonASTNode(jsonASTNode["statement"].toObject(), context, memDb);
-            visitChildrenBlocksWithContext(context);
+            visitAllChildrenWithContext(inclusionContext);
         } else {
-            visitChildrenBlocksWithContext(context);
+            visitAllChildrenWithContext(context);
         }
     }
 }
