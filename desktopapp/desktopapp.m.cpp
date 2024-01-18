@@ -164,6 +164,10 @@ int main(int argc, char *argv[])
     pluginSearchPaths.append(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/plugins");
 
     auto pluginManager = Codethink::lvtplg::PluginManager{};
+    std::cout << "pluginSearchPaths:\n";
+    for (auto const& p : pluginSearchPaths) {
+        std::cout << "+ " << p.toStdString() << "\n";
+    }
     pluginManager.loadPlugins(pluginSearchPaths);
     pluginManager.callHooksSetupPlugin();
 

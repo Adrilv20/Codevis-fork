@@ -119,9 +119,9 @@ void PluginManager::loadPlugins(const QList<QString>& searchPaths)
     for (const auto& pluginsStr : searchPaths) {
         QDir pluginsPath(pluginsStr);
 
-        qDebug() << "Loading plugins from " << pluginsPath.path() << "...";
+        std::cout << "Loading plugins from " << pluginsPath.path().toStdString() << "...\n";
         if (!pluginsPath.exists() || !pluginsPath.isReadable()) {
-            qDebug() << "Couldn't find any plugin on path " << pluginsPath.path();
+            std::cout << "Couldn't find any plugin on path " << pluginsPath.path().toStdString() << "\n";
             continue;
         }
 
@@ -134,9 +134,9 @@ void PluginManager::loadPlugins(const QList<QString>& searchPaths)
         }
     }
 
-    qDebug() << "Loaded plugins:";
+    std::cout << "Loaded plugins:\n";
     for (auto const& [_, p] : this->libraries) {
-        qDebug() << "+ " << QString::fromStdString(p->fileName());
+        std::cout << "+ " << p->fileName() << "\n";
     }
 }
 
