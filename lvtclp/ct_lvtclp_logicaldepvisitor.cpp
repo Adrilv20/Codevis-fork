@@ -753,20 +753,14 @@ bool LogicalDepVisitor::VisitFunctionDecl(clang::FunctionDecl *functionDecl)
             });
         }
 
-        // Heuristically assume that functions that have "_" suffix will have their definition in Fortran,
-        // so accept the C counterpart.
-        auto mayBeDefinedInFortran = qualifiedName.ends_with('_');
-        if (functionDecl->isDefined() || mayBeDefinedInFortran) {
-            // Only persist the associated file if it is where the function is _defined_
-            // (not if it is merely _declared_).
-            const clang::SourceManager& srcMgr = Context->getSourceManager();
-            std::string sourceFile = ClpUtil::getRealPath(functionDecl->getLocation(), srcMgr);
-            lvtmdb::FileObject *filePtr =
-                ClpUtil::writeSourceFile(sourceFile, false, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
-            filePtr->withRWLock([&] {
-                filePtr->addGlobalFunction(function);
-            });
-        }
+        const clang::SourceManager& srcMgr = Context->getSourceManager();
+        std::string sourceFile = ClpUtil::getRealPath(functionDecl->getLocation(), srcMgr);
+        lvtmdb::FileObject *filePtr =
+            ClpUtil::writeSourceFile(sourceFile, false, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        filePtr->withRWLock([&] {
+            filePtr->addGlobalFunction(function);
+        });
+
         return function;
     };
 
