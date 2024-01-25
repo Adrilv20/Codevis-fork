@@ -51,7 +51,7 @@ std::unique_ptr<AbstractLibraryDispatcher> PythonLibraryDispatcher::loadSinglePl
 {
     py::gil_scoped_acquire _;
 
-    auto pluginName = pluginDir.dirName().toStdString();
+    auto pluginName = pluginDir.dirName().toStdString() + "_plugin";
     auto pyLib = std::make_unique<PythonLibraryDispatcher>();
 
     auto pySys = py::module_::import("sys");
