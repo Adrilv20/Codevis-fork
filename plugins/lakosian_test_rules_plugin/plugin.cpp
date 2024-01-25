@@ -141,8 +141,8 @@ void toggleMergeTestEntitiesHelper(PluginContextMenuActionHandler *handler,
     auto *pluginData = getPluginData(handler);
     auto& activeToggleDataState = pluginData->toggleDataState[pluginData->activeSceneId];
     auto& toggleState = activeToggleDataState.toggleState;
-    auto& toggledTestEntities = activeToggleDataState.toggledTestEntities;
-    auto& testOnlyEdges = activeToggleDataState.testOnlyEdges;
+    // auto& toggledTestEntities = activeToggleDataState.toggledTestEntities;
+    // auto& testOnlyEdges = activeToggleDataState.testOnlyEdges;
 
     switch (toggleState) {
     case ToggleTestEntitiesState::VISIBLE:
