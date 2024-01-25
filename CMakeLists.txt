@@ -79,6 +79,8 @@ include(GenerateExportHeader)
 include(GetGitVersion)
 include(GetDate)
 include(FeatureSummary)
+include(CodevisDeployPlugin)
+
 find_package(Doxygen)
 find_package(SQLite3 REQUIRED)
 
