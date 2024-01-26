@@ -118,6 +118,17 @@ add_custom_target(
 )
 add_dependencies(lvtplg generate_lvtclp_py_bindings)
 
+# needed so plugins can find the header file for the interfaces allowed,
+# without string manipulation or environment variables on our side.
+add_library(CodevisPluginHeaders INTERFACE)
+target_include_directories(CodevisPluginHeaders
+    INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${PLUGIN_HEADERS_DIR}>
+        $<INSTALL_INTERFACE:include/codevis/${DTARGS_LIBRARY_NAME}>
+)
+
 if (COMPILE_TESTS)
     add_subdirectory(testplugins)
 

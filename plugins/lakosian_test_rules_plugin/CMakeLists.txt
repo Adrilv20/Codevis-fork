@@ -13,5 +13,6 @@ set_target_properties(${PLUGIN_NAME} PROPERTIES OUTPUT_NAME ${PLUGIN_NAME})
 
 target_compile_options(${PLUGIN_NAME} PRIVATE "-fvisibility=default")
 set_property(TARGET ${PLUGIN_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_link_libraries(${PLUGIN_NAME} Qt${QT_MAJOR_VERSION}::Core CodevisPluginHeaders)
 
 codevis_install_plugin(${PLUGIN_NAME} lakosian_test_rules)

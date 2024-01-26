@@ -45,7 +45,7 @@ macro(AddTargetLibrary)
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:include/lakos/${DTARGS_LIBRARY_NAME}>
+        $<INSTALL_INTERFACE:include/codevis/${DTARGS_LIBRARY_NAME}>
     )
 
     if (NOT ${KDE_FRAMEWORKS_IS_OLD})
