@@ -318,6 +318,10 @@ if (ENABLE_PYTHON_PLUGINS)
     add_compile_definitions(ENABLE_PYTHON_PLUGINS=1)
 endif()
 
+if (ECM_IS_OLD)
+    set(KDE_INSTALL_TARGETS_DEFAULT_ARGS $CMAKE_INSTALL_PREFIX)
+endif()
+
 add_subdirectory(lvtcgn)
 add_subdirectory(lvtclp)
 add_subdirectory(lvtldr)
