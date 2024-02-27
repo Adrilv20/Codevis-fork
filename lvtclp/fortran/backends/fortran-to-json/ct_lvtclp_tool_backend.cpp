@@ -180,9 +180,9 @@ QJsonDocument runFortranToJsonAndGetOutputs(std::string const& targetDirectory,
                                             std::string const& targetFile,
                                             std::vector<std::string> const& includePaths)
 {
-    static auto const FORTRAN_TO_JSON_EXECUTABLE = "fortran-to-json";
+    static auto const FORTRAN_TO_JSON_EXECUTABLE = QString::fromStdString("fortran-to-json");
 
-    auto fortranToJsonTool = QProcess();
+    auto fortranToJsonTool = QProcess{};
     auto jsonRawData = QString{};
     auto onFinish = [&fortranToJsonTool, &jsonRawData](int exitCode, QProcess::ExitStatus) {
         if (exitCode != 0) {
@@ -226,14 +226,16 @@ QJsonDocument runFortranToJsonAndGetOutputs(std::string const& targetDirectory,
         args.append(QString::fromStdString(includePath));
     }
 
-    std::cout << "++ Command: " << FORTRAN_TO_JSON_EXECUTABLE << " ";
+    std::cout << "++ Command: " << FORTRAN_TO_JSON_EXECUTABLE.toStdString() << " ";
     for (auto const& arg : args) {
         std::cout << arg.toStdString() << " ";
     }
     std::cout << "\n";
 
-    fortranToJsonTool.start(FORTRAN_TO_JSON_EXECUTABLE, args);
+    fortranToJsonTool.start(FORTRAN_TO_JSON_EXECUTABLE, args, QProcess::OpenModeFlag::ReadWrite);
+    std::cout << "...";
     fortranToJsonTool.waitForFinished();
+    std::cout << "!\n";
 
     return QJsonDocument::fromJson(jsonRawData.toUtf8());
 }
