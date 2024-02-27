@@ -215,11 +215,13 @@ QJsonDocument runFortranToJsonAndGetOutputs(std::string const& targetDirectory,
         }
     };
 
-    QObject::connect(fortranToJsonTool,
-                     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     fortranToJsonTool,
-                     onFinish);
-    QObject::connect(fortranToJsonTool, &QProcess::errorOccurred, fortranToJsonTool, onErrorOccurred);
+    /*
+        QObject::connect(fortranToJsonTool,
+                         QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                         fortranToJsonTool,
+                         onFinish);
+        QObject::connect(fortranToJsonTool, &QProcess::errorOccurred, fortranToJsonTool, onErrorOccurred);
+    */
 
     fortranToJsonTool->setWorkingDirectory(QString::fromStdString(targetDirectory));
     auto args = QStringList({"-v77l", QString::fromStdString(targetFile)});
@@ -235,6 +237,7 @@ QJsonDocument runFortranToJsonAndGetOutputs(std::string const& targetDirectory,
     }
     std::cout << "\n";
 
+    fortranToJsonTool->setProcessChannelMode(QProcess::MergedChannels);
     fortranToJsonTool->start(FORTRAN_TO_JSON_EXECUTABLE, args);
     std::cout << "..." << std::flush;
     fortranToJsonTool->waitForFinished();
