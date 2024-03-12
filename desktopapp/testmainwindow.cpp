@@ -23,3 +23,8 @@ TestMainWindow::TestMainWindow(Codethink::lvtldr::NodeStorage& sharedNodeStorage
     MainWindow(sharedNodeStorage, nullptr, undoManager, debugModel)
 {
 }
+
+QString TestMainWindow::requestProjectName()
+{
+    return QStringLiteral("__test_project__");
+}
