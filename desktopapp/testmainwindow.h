@@ -12,11 +12,9 @@ class TestMainWindow : public MainWindow {
     explicit TestMainWindow(Codethink::lvtldr::NodeStorage& sharedNodeStorage,
                             Codethink::lvtqtc::UndoManager *undoManager = nullptr,
                             Codethink::lvtmdl::DebugModel *debugModel = nullptr);
+    ~TestMainWindow() override = default;
 
-    QString requestProjectName() override
-    {
-        return QStringLiteral("__test_project__");
-    }
+    QString requestProjectName() override;
 };
 
 #endif

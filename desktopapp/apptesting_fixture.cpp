@@ -35,7 +35,7 @@ CodeVisApplicationTestFixture::CodeVisApplicationTestFixture()
 
     // Resources must be initialized before mainwindow, so I can't initialize this on
     // the initialization list.
-    mainWindow = new TestMainWindow(sharedNodeStorage, &undoManager);
+    mainWindow = std::make_unique<TestMainWindow>(sharedNodeStorage, &undoManager);
     mainWindow->show();
 }
 
@@ -209,7 +209,8 @@ void CodeVisApplicationTestFixture::clickOn(ClickableFeature const& feature)
 
 void CodeVisApplicationTestFixture::ctrlZ()
 {
-    QTest::keySequence(mainWindow, static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) | static_cast<int>(Qt::Key_Z)));
+    QTest::keySequence(mainWindow.get(),
+                       static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) | static_cast<int>(Qt::Key_Z)));
     QTest::qWait(100);
 }
 
@@ -218,7 +219,7 @@ void CodeVisApplicationTestFixture::ctrlShiftZ()
 #if defined(Q_OS_WINDOWS)
     QTest::keySequence(mainWindow, static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) | static_cast<int>(Qt::Key_Y)));
 #else
-    QTest::keySequence(mainWindow,
+    QTest::keySequence(mainWindow.get(),
                        static_cast<QKeySequence>(static_cast<int>(Qt::CTRL) | static_cast<int>(Qt::SHIFT)
                                                  | static_cast<int>(Qt::Key_Z)));
 #endif
@@ -253,4 +254,9 @@ QPoint CodeVisApplicationTestFixture::findElementTopLeftPosition(const std::stri
     const auto offset = QPointF(10, 10);
     const auto p = entity->scenePos() + offset;
     return view->mapFromScene(p);
+}
+
+TestMainWindow& CodeVisApplicationTestFixture::window()
+{
+    return *mainWindow;
 }
