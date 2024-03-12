@@ -154,8 +154,8 @@ if (COMPILE_TESTS)
         add_executable(${TEST_NAME}
             ${test_desktopapp_SRCS}
             ${FILE_NAME}
-            apptesting_fixture.cpp
             testmainwindow.cpp
+            apptesting_fixture.cpp
             apptesting_fixture.h
         )
 
@@ -165,7 +165,8 @@ if (COMPILE_TESTS)
             Codethink::lvttst_tmpdir
             codevis_lib
             ${SYSTEM_EXTRA_LIBRARIES}
-            Qt::Test
+            Qt${QT_MAJOR_VERSION}::Core
+            Qt${QT_MAJOR_VERSION}::Test
         )
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     endmacro()
@@ -180,7 +181,7 @@ if (COMPILE_TESTS)
     ADD_DESKTOP_TEST(mainwindow_test_autosave mainwindow_test_autosave.t.cpp)
     ADD_DESKTOP_TEST(mainwindow_test_tool_selection mainwindow_test_tool_selection.t.cpp)
 
-    # This test doesn't work on Qt5 because of Bad API'
+    # This test doesn't work on Qt5 because of Bad API
     if (QT_MAJOR_VERSION STREQUAL "6")
         ADD_DESKTOP_TEST(mainwindow_test_element_move mainwindow_test_element_move.t.cpp)
     endif()
@@ -190,8 +191,9 @@ if (COMPILE_TESTS)
         Codethink::lvttst
         Codethink::lvttst_fixture_qt
         codevis_lib
-        ${EXTRA_SYSTEM_LIBRARIES}
-        Qt::Test
+        ${SYSTEM_EXTRA_LIBRARIES}
+        Qt${QT_MAJOR_VERSION}::Core
+        Qt${QT_MAJOR_VERSION}::Test
     )
     add_test(NAME test_projectsettingsdialog COMMAND test_projectsettingsdialog)
 endif()
