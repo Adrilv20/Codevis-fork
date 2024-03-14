@@ -89,12 +89,13 @@ struct LVTCLP_EXPORT ClpUtil {
     static std::filesystem::path normalisePath(std::filesystem::path path, const std::filesystem::path& prefix);
     // Normalise a path for inclusion in the database
 
-    static lvtmdb::FileObject *writeSourceFile(const std::string& filename,
-                                               bool isHeader,
-                                               lvtmdb::ObjectStore& memDb,
-                                               const std::filesystem::path& prefix,
-                                               const std::vector<std::filesystem::path>& nonLakosianDirs,
-                                               const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs);
+    static lvtmdb::FileObject *
+    writeLakosianSourceFile(const std::string& filename,
+                            bool isHeader,
+                            lvtmdb::ObjectStore& memDb,
+                            const std::filesystem::path& prefix,
+                            const std::vector<std::filesystem::path>& nonLakosianDirs,
+                            const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs);
 
     static std::string getRealPath(const clang::SourceLocation& loc, const clang::SourceManager& mgr);
     // Fetch ann absolute path to loc (or "")

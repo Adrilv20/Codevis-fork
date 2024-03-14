@@ -237,12 +237,13 @@ std::filesystem::path ClpUtil::normalisePath(std::filesystem::path path, const s
     return path;
 }
 
-lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
-                                             bool isHeader,
-                                             lvtmdb::ObjectStore& memDb,
-                                             const std::filesystem::path& prefix,
-                                             const std::vector<std::filesystem::path>& nonLakosianDirs,
-                                             const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs)
+lvtmdb::FileObject *
+ClpUtil::writeLakosianSourceFile(const std::string& inFilename,
+                                 bool isHeader,
+                                 lvtmdb::ObjectStore& memDb,
+                                 const std::filesystem::path& prefix,
+                                 const std::vector<std::filesystem::path>& nonLakosianDirs,
+                                 const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs)
 {
     if (inFilename.empty()) {
         return nullptr;
