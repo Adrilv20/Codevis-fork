@@ -77,7 +77,7 @@ void HeaderCallbacks::InclusionDirective(clang::SourceLocation HashLoc,
     }
 
     lvtmdb::FileObject *filePtr =
-        ClpUtil::writeSourceFile(realPathStr, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        ClpUtil::writeLakosianSourceFile(realPathStr, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
 
     if (filePtr == d_sourceFile_p) {
         return;
@@ -163,7 +163,7 @@ void HeaderCallbacks::FileChanged(clang::SourceLocation sourceLocation,
     }
 
     d_sourceFile_p =
-        ClpUtil::writeSourceFile(realPath, isHeader, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        ClpUtil::writeLakosianSourceFile(realPath, isHeader, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
 }
 
 } // end namespace Codethink::lvtclp

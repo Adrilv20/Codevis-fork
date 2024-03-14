@@ -139,7 +139,8 @@ LogicalDepVisitor::LogicalDepVisitor(clang::ASTContext *Context,
     d_messageCallback(std::move(messageCallback)),
     d_catchCodeAnalysisOutput(catchCodeAnalysisOutput)
 {
-    sourceFilePtr = ClpUtil::writeSourceFile(file.str(), false, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+    sourceFilePtr =
+        ClpUtil::writeLakosianSourceFile(file.str(), false, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
 }
 
 bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
@@ -178,7 +179,7 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
     const clang::SourceManager& srcMgr = Context->getSourceManager();
     std::string sourceFile = ClpUtil::getRealPath(namespaceDecl->getLocation(), srcMgr);
     lvtmdb::FileObject *filePtr =
-        ClpUtil::writeSourceFile(sourceFile, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        ClpUtil::writeLakosianSourceFile(sourceFile, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
     if (namespacePtr) {
         namespacePtr->withRWLock([&] {
             namespacePtr->addFile(filePtr);
@@ -713,8 +714,12 @@ bool LogicalDepVisitor::VisitFunctionDecl(clang::FunctionDecl *functionDecl)
             // (not if it is merely _declared_).
             const clang::SourceManager& srcMgr = Context->getSourceManager();
             std::string sourceFile = ClpUtil::getRealPath(functionDecl->getLocation(), srcMgr);
-            lvtmdb::FileObject *filePtr =
-                ClpUtil::writeSourceFile(sourceFile, false, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+            lvtmdb::FileObject *filePtr = ClpUtil::writeLakosianSourceFile(sourceFile,
+                                                                           false,
+                                                                           d_memDb,
+                                                                           d_prefix,
+                                                                           d_nonLakosianDirs,
+                                                                           d_thirdPartyDirs);
             filePtr->withRWLock([&] {
                 filePtr->addGlobalFunction(function);
             });
@@ -1740,7 +1745,7 @@ void LogicalDepVisitor::addUDTSourceFile(lvtmdb::TypeObject *udt, const clang::D
     const std::string sourceFile = ClpUtil::getRealPath(decl->getLocation(), Context->getSourceManager());
 
     lvtmdb::FileObject *filePtr =
-        ClpUtil::writeSourceFile(sourceFile, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        ClpUtil::writeLakosianSourceFile(sourceFile, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
     if (!filePtr) {
         return;
     }
