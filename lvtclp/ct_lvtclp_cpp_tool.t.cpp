@@ -718,22 +718,17 @@ TEST_CASE("Test run tool with non-lakosian rules")
 {
     auto const PREFIX = std::string{TEST_PRJ_PATH};
     auto const prjPath = PREFIX + "/cpp_nonlakosian_test/";
-    auto cdb = StaticCompilationDatabase{{
-                                             {"main.cpp", "main.o"},
-                                             {"mylibs/lib1/lib1.cpp", "lib1.o"},
-                                             {"mylibs/lib2/lib2.cpp", "lib2.o"},
-                                         },
-                                         "placeholder",
-                                         {"-I" + prjPath, "-std=c++17"},
-                                         prjPath};
     auto tool = CppTool(
         /*sourcePath=*/prjPath,
-        /*db=*/cdb,
+        /*compileCommandsJsons=*/
+        std::vector<std::filesystem::path>{"/home/tarcisiofischer/Projects/ws0/codevis/lvtclp/systemtests/"
+                                           "cpp_nonlakosian_test/build/compile_commands.json"},
         /*databasePath=*/prjPath + "/database",
         /*numThreads=*/1,
         /*ignoreList=*/{},
         /*nonLakosianDirs=*/{},
         /*thirdPartyDirs=*/{},
+        /*userProvidedExtraCompileCommandsArgs=*/{"-iquote" + prjPath + "hidden_folder/"},
         /*enableLakosianRules=*/false,
         /*printToConsole=*/false);
     ObjectStore& memDb = tool.getObjectStore();
@@ -745,7 +740,8 @@ TEST_CASE("Test run tool with non-lakosian rules")
     };
 
     addLock(&memDb);
-    REQUIRE(memDb.getAllFiles().size() == 6);
+    // Note: 6 files within the project, and 1 extra file hidden, added with `userProvidedExtraCompileCommandsArgs`
+    REQUIRE(memDb.getAllFiles().size() == 7);
 
     // There's no "non-lakosian" pseudo-package
     auto *rootPkg = memDb.getPackage("cpp_nonlakosian_test");
