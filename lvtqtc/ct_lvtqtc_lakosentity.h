@@ -51,7 +51,7 @@ class LakosianNode;
 }
 
 namespace Codethink::lvtplg {
-class Entity;
+struct Entity;
 }
 
 namespace Codethink::lvtqtc {
