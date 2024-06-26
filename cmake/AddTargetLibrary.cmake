@@ -23,7 +23,7 @@ macro(AddTargetLibrary)
         DTARGS_SOURCES ${DTARGS_QT_HEADERS} OPTIONS "--no-warnings" "--no-notes"
     )
 
-    if (BUILD_DESKTOP_APP)
+    if (BUILD_DESKTOP_APP AND QT_MAJOR_VERSION STREQUAL "6")
         cmake_language(CALL
             qt${QT_MAJOR_VERSION}_wrap_ui
             DTARGS_SOURCES ${DTARGS_DESIGNER_FORMS}
