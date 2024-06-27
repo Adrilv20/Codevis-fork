@@ -2,6 +2,8 @@
 # LVT Codegen model library
 # =========================
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+
 cmake_language(CALL
     qt${QT_MAJOR_VERSION}_add_resources
     CODEGEN_RESOURCES_SRCS
@@ -116,4 +118,6 @@ if (BUILD_DESKTOP_APP)
                 )
         add_test(NAME test_lvtcgn_app_adapter COMMAND test_lvtcgn_app_adapter)
     endif()
+endif()
+
 endif()

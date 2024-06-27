@@ -95,6 +95,10 @@ else()
     set(KFNewStuffWidgetsIfAvailable KF${KF_MAJOR_VERSION}::NewStuffWidgets)
 endif()
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set(CODEGEN_LIB Codethink::lvtcgn_adapter)
+endif()
+
 target_link_libraries(
     codevis_lib
 
@@ -112,8 +116,8 @@ target_link_libraries(
     Codethink::lvtqtw
     Codethink::lvtqtc
     Codethink::lvtplg
-    Codethink::lvtcgn_adapter
     Codethink::codevis_project_helpers
+    ${CODEGEN_LIB}
 
     resources
 
