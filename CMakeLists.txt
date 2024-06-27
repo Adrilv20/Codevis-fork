@@ -148,7 +148,6 @@ if (BUILD_DESKTOP_APP)
         CoreAddons
         WidgetsAddons
         TextEditor
-        TextTemplate
         XmlGui
         NewStuffCore
         NewStuff
@@ -158,6 +157,11 @@ if (BUILD_DESKTOP_APP)
         OPTIONAL_COMPONENTS
         DocTools
     )
+
+    if(KF_MAJOR_VERSION STREQUAL "6")
+        find_package(KF${KF_MAJOR_VERSION} ${KF5_MIN_VERSION} REQUIRED COMPONENTS TextTemplate)
+    endif()
+
     # KF5 doesn't have split version, so we build it here
     string(REPLACE "." ";" VERSION_LIST "${KF${KF_MAJOR_VERSION}_VERSION}")
     list(GET VERSION_LIST 0 KF_VERSION_MAJOR)
@@ -328,7 +332,6 @@ if (KDE_FRAMEWORKS_IS_OLD)
     set(KDE_INSTALL_KNOTIFYRCDIR $CMAKE_INSTALL_PREFIX/share/knotifications5)
 endif()
 
-add_subdirectory(lvtcgn)
 add_subdirectory(lvtclp)
 add_subdirectory(lvtldr)
 add_subdirectory(lvtmdb)
@@ -369,6 +372,7 @@ if (BUILD_DESKTOP_APP)
         add_subdirectory(plugins)
     endif()
 
+    add_subdirectory(lvtcgn)
     add_subdirectory(lvtmdl)
     add_subdirectory(lvtclr)
     add_subdirectory(lvtqtc)

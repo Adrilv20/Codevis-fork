@@ -106,6 +106,7 @@ target_link_libraries(
     KF${KF_MAJOR_VERSION}::Notifications
     KF${KF_MAJOR_VERSION}::NewStuffCore
     ${KFNewStuffWidgetsIfAvailable}
+    ${CODEGEN_LIB}
 
     Codethink::lvtmdl
     Codethink::lvtprj
