@@ -41,6 +41,7 @@
 #include <QStatusBar>
 #include <QTemporaryDir>
 #include <QTextEdit>
+#include <qmessagebox.h>
 #ifdef USE_WEB_ENGINE
 #include <QWebEngineView>
 #else
@@ -78,7 +79,9 @@
 
 #include <ct_lvtprj_projectfile.h>
 
+#if QT_VERSION >= 0x060000
 #include <ct_lvtcgn_app_adapter.h>
+#endif
 
 #include <memory>
 #include <merge_project_databases.h>
@@ -765,8 +768,14 @@ void MainWindow::saveProjectAs()
 
 void MainWindow::openCodeGenerationWindow()
 {
+#if QT_VERSION >= 0x060000
     using Codethink::lvtcgn::app::CodegenAppAdapter;
     CodegenAppAdapter::run(this, sharedNodeStorage);
+#else
+    QMessageBox::warning(this,
+                         tr("Error"),
+                         tr("Not implemented for your version of the software. compile with a more recent library."));
+#endif
 }
 
 void MainWindow::openProjectAction()

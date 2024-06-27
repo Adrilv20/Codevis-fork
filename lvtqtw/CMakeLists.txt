@@ -1,6 +1,6 @@
 include_directories(SYSTEM ${LLVM_INCLUDE_DIR})
 
-if (${KF_VERSION_MAJOR} EQUAL 5 AND ${KF_VERSION_MINOR} LESS 90)
+if (KF_VERSION_MAJOR STREQUAL "5")
     message("Warning: Old KDE Framework version doesn't have KFNewStuffWidgets available. Disabling support.")
     set(KFNewStuffWidgetsIfAvailable "") # No such library
 
@@ -98,12 +98,16 @@ if (COMPILE_TESTS)
         add_executable(test_${TC_NAME}
             ${TC_NAME}.t.cpp
         )
+        if (QT_MAJOR_VERSION STREQUAL "6")
+            SET(CODEGEN_LIB Codethink::lvtcgn_gui)
+        endif()
+
         target_link_libraries(test_${TC_NAME}
-           Codethink::lvtqtw
+            Codethink::lvtqtw
             Codethink::lvttst
             Codethink::lvttst_fixture_qt
             Codethink::lvttst_tmpdir
-            Codethink::lvtcgn_gui
+            ${CODEGEN_LIB}
             Qt::Test
         )
         add_test(NAME test_${TC_NAME} COMMAND test_${TC_NAME})
