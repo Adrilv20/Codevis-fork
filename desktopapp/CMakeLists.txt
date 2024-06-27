@@ -106,13 +106,13 @@ target_link_libraries(
     KF${KF_MAJOR_VERSION}::Notifications
     KF${KF_MAJOR_VERSION}::NewStuffCore
     ${KFNewStuffWidgetsIfAvailable}
+    ${CODEGEN_LIB}
 
     Codethink::lvtmdl
     Codethink::lvtprj
     Codethink::lvtqtw
     Codethink::lvtqtc
     Codethink::lvtplg
-    Codethink::lvtcgn_adapter
     Codethink::codevis_project_helpers
 
     resources
