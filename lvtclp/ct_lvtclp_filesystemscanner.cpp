@@ -450,6 +450,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
 
 FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
 {
+    std::cout << "Running Add to Database";
     auto lock = d->memDb.rwLock();
 
     IncrementalResult out;
@@ -460,16 +461,19 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
     std::unordered_set<lvtmdb::PackageObject *> existingPkgs;
     std::unordered_set<lvtmdb::FileObject *> existingFiles;
 
+    std::cout << "Current Number of Database Packages " << allDbPkgs.size() << std::endl;
     // add repositories
     for (const auto& helper : d->foundRepositories) {
         (void) d->memDb.getOrAddRepository(helper.qualifiedName, helper.path);
     }
 
     // add package groups
+    std::cout << "Number of found pkgGroups " << d->foundPkgGrps.size() << std::endl;
     for (const auto& [name, helper] : d->foundPkgGrps) {
         addPackage(out, existingPkgs, name, std::string{}, helper.filePath, helper.parentRepositoryName);
     }
 
+    std::cout << "Number of found pkgs " << d->foundPkgGrps.size() << std::endl;
     // add packages
     for (auto const& pkg : d->foundPkgs) {
         addPackage(out, existingPkgs, pkg.qualifiedName, pkg.parent, pkg.filePath, pkg.repositoryName);
@@ -586,6 +590,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
         }
     }
 
+    std::cout << "Cleaning found packages" << std::endl;
     // we've processed everything we added. Clear everything so we are ready for
     // the next scan
     d->foundFiles.clear();
