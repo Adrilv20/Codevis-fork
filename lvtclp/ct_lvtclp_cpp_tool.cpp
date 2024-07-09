@@ -961,12 +961,14 @@ bool CppTool::runPhysical(bool skipScan)
 bool CppTool::runFull(bool skipPhysical)
 {
     if (!ensureSetup()) {
+        std::cout << "Setup not done, quitting" << std::endl;
         return false;
     }
     {
         std::unique_lock<std::mutex> lock(d->executorMutex);
         if (d->executorCancelled) {
             d->executorCancelled = false;
+            std::cout << "Executor cancelled, quitting" << std::endl;
             return false;
         }
     }
@@ -980,10 +982,12 @@ bool CppTool::runFull(bool skipPhysical)
     }
 
     if (!findPhysicalEntities(doIncremental)) {
+        std::cout << "Could not find physical entities, quitting" << std::endl;
         return false;
     }
 
     if (!skipPhysical && !runPhysical(true)) {
+        std::cout << "Could not run physical entities, quitting" << std::endl;
         return false;
     }
 
@@ -993,6 +997,7 @@ bool CppTool::runFull(bool skipPhysical)
         // if we aren't starting from a database with logical data, we need to
         // re-run on every file, even if incremental updates only found changes
         // in a few files
+        std::cout << "Coping data to the incremental db" << std::endl;
         d->incrementalCdb.emplace(*d->compilationDb, d->compilationDb->getAllFiles(), d->compilationDb->commonParent());
     }
 
@@ -1024,6 +1029,7 @@ bool CppTool::runFull(bool skipPhysical)
 
     d->toolExecutor = new ToolExecutor(*d->incrementalCdb, d->numThreads, d->messageCallback, d->memDb());
 
+    std::cout << "Executing the logical parse" << std::endl;
     llvm::Error err = d->toolExecutor->execute(std::move(actionFactory));
 
     bool cancelled = false;
@@ -1034,7 +1040,7 @@ bool CppTool::runFull(bool skipPhysical)
         cancelled = d->executorCancelled;
         d->executorCancelled = false;
     }
-
+    std::cout << "Logical parse finished" << std::endl;
     if (err) {
         d->memDb().setState(lvtmdb::ObjectStore::State::LogicalError);
 
@@ -1057,6 +1063,7 @@ bool CppTool::runFull(bool skipPhysical)
     }
 
     if (!LogicalPostProcessUtil::postprocess(d->memDb(), d->printToConsole)) {
+        std::cout << "Could not post-process the data" << std::endl;
         return false;
     }
 
