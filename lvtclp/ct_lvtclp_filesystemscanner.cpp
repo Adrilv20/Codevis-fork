@@ -156,6 +156,7 @@ FilesystemScanner::~FilesystemScanner() noexcept = default;
 FilesystemScanner::IncrementalResult FilesystemScanner::scanCompilationDb()
 {
     for (const std::string& string : d->cdb.getAllFiles()) {
+        std::cout << "\t\tScanning " << string << std::endl;
         const std::filesystem::path path(string);
         scanPath(path);
         scanHeader(path);
@@ -305,21 +306,27 @@ void FilesystemScanner::processFileUsingLakosianRules(const std::filesystem::pat
 
 void FilesystemScanner::scanPath(const std::filesystem::path& path)
 {
+    std::cout << "\t\t\t" << "Scan Path" << std::endl;
     if (!std::filesystem::is_regular_file(path)) {
+        std::cout << "\t\t\tNot a regular file. exiting" << std::endl;
         return;
     }
 
     if (ClpUtil::isFileIgnored(path.filename().string(), d->ignoreGlobs)) {
+        std::cout << "\t\t\tFile is ignored, exiting" << std::endl;
         return;
     }
 
     if (tryProcessFileUsingSemanticRules(path)) {
+        std::cout << "\t\t\tProcessed under semantic rules" << std::endl;
         return;
     }
 
     if (d->enableLakosianRules) {
+        std::cout << "\t\t\tProcessed under Lakosian Rules" << std::endl;
         processFileUsingLakosianRules(path);
     } else {
+        std::cout << "\t\t\tProcessed under non lakosian rules" << std::endl;
         nonLakosian::ClpUtil::writeSourceFile(d->memDb,
                                               path.string(),
                                               d->prefix.string(),
