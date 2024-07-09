@@ -26,6 +26,7 @@
 #include <ct_lvtclp_cpp_tool.h>
 #include <ct_lvtclp_testutil.h>
 
+#include <QTemporaryDir>
 #include <filesystem>
 
 #include <catch2-local-includes.h>

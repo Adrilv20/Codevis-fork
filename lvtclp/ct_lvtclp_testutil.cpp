@@ -313,6 +313,7 @@ bool Test_Util::createFile(const std::filesystem::path& path, const std::string&
         std::filesystem::create_directories(parent);
     }
 
+    std::cout << "Creating File" << path << std::endl;
     std::ofstream output(path);
     if (output.fail()) {
         qDebug() << "Failed to open " << path.c_str();
