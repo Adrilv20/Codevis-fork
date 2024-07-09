@@ -28,6 +28,8 @@
 #include <ct_lvtclp_toolexecutor.h>
 
 #include <ct_lvtmdb_objectstore.h>
+#include <ct_lvtmdb_packageobject.h>
+
 #include <ct_lvtshr_functional.h>
 #include <ct_lvtshr_stringhelpers.h>
 
@@ -960,6 +962,25 @@ bool CppTool::runPhysical(bool skipScan)
 
 bool CppTool::runFull(bool skipPhysical)
 {
+    // we test that files have things in them accross the other unit tests
+    // lets focus on components and packages here
+
+    auto testForData = [this](const std::string debug_value) {
+        getObjectStore().withROLock([&] {
+            auto *bsl = getObjectStore().getPackage("groups/bsl");
+            std::cout << debug_value << "\t";
+            if (bsl) {
+                bsl->withROLock([bsl] {
+                    std::cout << "bsl number of children " << bsl->children().size() << std::endl;
+                    ;
+                });
+            } else {
+                std::cout << "No data yet" << std::endl;
+            }
+        });
+    };
+
+    testForData("1");
     if (!ensureSetup()) {
         std::cout << "Setup not done, quitting" << std::endl;
         return false;
@@ -972,6 +993,7 @@ bool CppTool::runFull(bool skipPhysical)
             return false;
         }
     }
+    testForData("2");
 
     bool doIncremental = true;
     const lvtmdb::ObjectStore::State oldState = d->memDb().state();
@@ -985,11 +1007,13 @@ bool CppTool::runFull(bool skipPhysical)
         std::cout << "Could not find physical entities, quitting" << std::endl;
         return false;
     }
+    testForData("3");
 
     if (!skipPhysical && !runPhysical(true)) {
         std::cout << "Could not run physical entities, quitting" << std::endl;
         return false;
     }
+    testForData("4");
 
     assert(d->incrementalCdb);
 
@@ -1000,6 +1024,7 @@ bool CppTool::runFull(bool skipPhysical)
         std::cout << "Coping data to the incremental db" << std::endl;
         d->incrementalCdb.emplace(*d->compilationDb, d->compilationDb->getAllFiles(), d->compilationDb->commonParent());
     }
+    testForData("5");
 
     auto filenameCallback = [this](const std::string& path) {
         if (d->printToConsole) {
@@ -1012,6 +1037,7 @@ bool CppTool::runFull(bool skipPhysical)
     if (d->showDatabaseErrors) {
         messageOpt = d->messageCallback;
     }
+    testForData("6");
 
     std::unique_ptr<clang::tooling::FrontendActionFactory> actionFactory =
         std::make_unique<LogicalDepActionFactory>(d->memDb(),
@@ -1026,11 +1052,13 @@ bool CppTool::runFull(bool skipPhysical)
                                                   d->handleCppCommentsCallback);
 
     Q_EMIT aboutToCallClangNotification(tr("Logical Parse"), d->incrementalCdb->numCompileCommands());
+    testForData("7");
 
     d->toolExecutor = new ToolExecutor(*d->incrementalCdb, d->numThreads, d->messageCallback, d->memDb());
 
     std::cout << "Executing the logical parse" << std::endl;
     llvm::Error err = d->toolExecutor->execute(std::move(actionFactory));
+    testForData("8");
 
     bool cancelled = false;
     {
@@ -1040,6 +1068,8 @@ bool CppTool::runFull(bool skipPhysical)
         cancelled = d->executorCancelled;
         d->executorCancelled = false;
     }
+    testForData("9");
+
     std::cout << "Logical parse finished" << std::endl;
     if (err) {
         d->memDb().setState(lvtmdb::ObjectStore::State::LogicalError);
@@ -1066,7 +1096,8 @@ bool CppTool::runFull(bool skipPhysical)
         std::cout << "Could not post-process the data" << std::endl;
         return false;
     }
-
+    testForData("10");
+    std::cout << "Finished" << std::endl;
     return !err;
 }
 
