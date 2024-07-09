@@ -407,7 +407,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
                                                      const std::string& filePath,
                                                      const std::string& repositoryName)
 {
-    std::cout << "\t\t\t\tFilesystem scanner" << std::endl;
+    std::cout << "\t\t\t\tFilesystem scanner " << qualifiedName << std::endl;
     lvtmdb::PackageObject *pkg = d->memDb.getPackage(qualifiedName);
     if (pkg) {
         std::cout << "\t\t\t\tPackage exists, returning" << std::endl;
