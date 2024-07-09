@@ -354,7 +354,11 @@ std::string FilesystemScanner::addLakosianSourcePackage(const std::filesystem::p
         return {};
     }
 
+    std::cout << "Before Normalizing Path " << path << std::endl;
     const std::filesystem::path normalisedPath = ClpUtil::normalisePath(path, d->prefix);
+    std::cout << "After normalizing Path " << normalisedPath << std::endl;
+    ;
+    std::cout << "d->prefix " << d->prefix << std::endl;
     if (normalisedPath.empty()) {
         return {};
     }
