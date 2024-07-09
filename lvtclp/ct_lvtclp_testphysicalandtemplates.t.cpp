@@ -275,6 +275,9 @@ struct PhysicalAndTemplatesFixture {
     PhysicalAndTemplatesFixture():
         topLevel(std::filesystem::temp_directory_path() / "ct_lvtclp_testphysicalandtemplates_test")
     {
+        QTemporaryDir someDir;
+        std::cout << "Qt Temporary Dir" << someDir.path().toStdString() << std::endl;
+        ;
         createTestEnv(topLevel);
     }
 
