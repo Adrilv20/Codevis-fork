@@ -95,6 +95,9 @@ const std::vector<TypeObject *>& PackageObject::types() const
 void PackageObject::addChild(PackageObject *pkg)
 {
     assertWritable();
+    pkg->withROLock([this, pkg] {
+        std::cout << "Adding child on package: [" << name() << "," << pkg->name() << "]" << std::endl;
+    });
     MdbUtil::pushBackUnique(d_children, pkg);
 }
 

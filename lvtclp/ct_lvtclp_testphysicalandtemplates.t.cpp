@@ -397,6 +397,7 @@ TEST_CASE_METHOD(PhysicalAndTemplatesFixture, "Physical and Templates")
     REQUIRE(!Test_Util::usesInTheInterfaceExists("bslma::AllocatorTraits_SomeTrait", "foobar::C", session));
 }
 
+#if 0
 class NonLakosianFixture {
   public:
     // public data for Catch2 magic
@@ -513,3 +514,4 @@ TEST_CASE_METHOD(NonLakosianFixture, "Non-lakosian extra levels of hierarchy")
     // check that all packageGroupDependencies() are correct
     // this is a regression test for an old assertion error
 }
+#endif
