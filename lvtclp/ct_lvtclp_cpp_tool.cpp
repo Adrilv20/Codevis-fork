@@ -797,10 +797,27 @@ void CppTool::setupIncrementalUpdate(FilesystemScanner::IncrementalResult& res, 
 
 bool CppTool::findPhysicalEntities(bool doIncremental)
 {
+    auto testForData = [this](const std::string debug_value) {
+        getObjectStore().withROLock([&] {
+            auto *bsl = getObjectStore().getPackage("groups/bsl");
+            std::cout << debug_value << "\t";
+            if (bsl) {
+                bsl->withROLock([bsl] {
+                    std::cout << "bsl number of children " << bsl->children().size() << std::endl;
+                    ;
+                });
+            } else {
+                std::cout << "No data yet" << std::endl;
+            }
+        });
+    };
+
     if (!ensureSetup()) {
+        std::cout << "No setup done, exiting" << std::endl;
         return false;
     }
 
+    testForData("\t1");
     bool dbErrorState = false;
 
     const lvtmdb::ObjectStore::State oldState = d->memDb().state();
@@ -820,6 +837,7 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
         //            d->memDb().clear();
         //        });
     }
+    testForData("\t2");
 
     // We can do a physical update if we completed the last physical parse.
     if (oldState != lvtmdb::ObjectStore::State::PhysicalReady && oldState != lvtmdb::ObjectStore::State::AllReady
@@ -828,7 +846,8 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
         // incremental update
         doIncremental = false;
     }
-
+    testForData("\t3");
+    std::cout << "Creating filesystem scanner" << std::endl;
     FilesystemScanner scanner(d->memDb(),
                               d->compilationDb->commonParent(),
                               d->buildPath,
@@ -846,7 +865,8 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
             return false;
         }
     }
-
+    testForData("\t4");
+    std::cout << "Starting the filesystem scanner" << std::endl;
     FilesystemScanner::IncrementalResult res = scanner.scanCompilationDb();
     {
         std::unique_lock<std::mutex> lock(d->executorMutex);
@@ -855,8 +875,10 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
             return false;
         }
     }
+    testForData("\t5");
 
     setupIncrementalUpdate(res, doIncremental);
+    testForData("\t6");
 
     {
         std::unique_lock<std::mutex> lock(d->executorMutex);
@@ -870,6 +892,7 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
         // we only have physical entities: no dependencies
         d->memDb().setState(lvtmdb::ObjectStore::State::NoneReady);
     }
+    testForData("\t7");
 
     return true;
 }
