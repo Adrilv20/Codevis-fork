@@ -450,7 +450,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
 
 FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
 {
-    std::cout << "Running Add to Database";
+    std::cout << "Running Add to Database" << std::endl;
     auto lock = d->memDb.rwLock();
 
     IncrementalResult out;
