@@ -407,8 +407,10 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
                                                      const std::string& filePath,
                                                      const std::string& repositoryName)
 {
+    std::cout << "\t\t\t\tFilesystem scanner" << std::endl;
     lvtmdb::PackageObject *pkg = d->memDb.getPackage(qualifiedName);
     if (pkg) {
+        std::cout << "\t\t\t\tPackage exists, returning" << std::endl;
         existingPkgs.insert(pkg);
         return pkg;
     }
@@ -418,6 +420,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
 
     lvtmdb::PackageObject *parent = nullptr;
     if (!parentName.empty()) {
+        std::cout << "\t\t\t\tAdding parent to package: " << parentName << std::endl;
         // we can't recurse in the common case, otherwise existingPkgs
         // would get false positives
         parent = d->memDb.getPackage(parentName);
@@ -428,6 +431,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
         assert(parent);
     }
 
+    std::cout << "\t\t\t\tAdding elements to the mem db" << std::endl;
     lvtmdb::RepositoryObject *repo = d->memDb.getOrAddRepository(repositoryName, "");
 
     out.newPkgs.push_back(qualifiedName);
@@ -445,6 +449,7 @@ lvtmdb::PackageObject *FilesystemScanner::addPackage(IncrementalResult& out,
         });
     }
 
+    std::cout << "\t\t\t\tFinalizing" << std::endl;
     return thisPkg;
 }
 
