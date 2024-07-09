@@ -280,16 +280,19 @@ bool FilesystemScanner::tryProcessFileUsingSemanticRules(const std::filesystem::
 void FilesystemScanner::processFileUsingLakosianRules(const std::filesystem::path& path)
 {
     if (ClpUtil::isComponentOnStandalonePackage(path)) {
+        std::cout << "Component on Standalone Package" << std::endl;
         const auto pkgPath = path.parent_path();
         const auto pkg = addLakosianSourcePackage(pkgPath, "", true);
         addSourceFile((pkgPath / path.filename()).string(), pkg);
     } else if (ClpUtil::isComponentOnPackageGroup(path)) {
+        std::cout << "Component on Package Group" << std::endl;
         const auto pkgPath = path.parent_path();
         const auto pkgGrpPath = pkgPath.parent_path();
         const auto pkgGrp = addLakosianSourcePackage(pkgGrpPath, "", false);
         const auto pkg = addLakosianSourcePackage(pkgPath, pkgGrp, false);
         addSourceFile((pkgPath / path.filename()).string(), pkg);
     } else {
+        std::cout << "Non Lakosian Group" << std::endl;
         const static std::string nonLakosianGroup(ClpUtil::NON_LAKOSIAN_GROUP_NAME);
         if (!d->foundPkgGrps.count(nonLakosianGroup)) {
             d->foundPkgGrps[nonLakosianGroup] = PackageHelper{"", nonLakosianGroup, std::string{}};
@@ -337,6 +340,7 @@ void FilesystemScanner::scanPath(const std::filesystem::path& path)
 
 void FilesystemScanner::addSourceFile(const std::filesystem::path& path, const std::string& package)
 {
+    std::cout << "Add Source File, Package " << package << std::endl;
     d->foundFiles.push_back({package, path.string(), std::string{}});
 }
 
