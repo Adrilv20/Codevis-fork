@@ -1002,7 +1002,7 @@ bool CppTool::runFull(bool skipPhysical)
         // incremental update
         doIncremental = false;
     }
-
+    testForData("2.1");
     if (!findPhysicalEntities(doIncremental)) {
         std::cout << "Could not find physical entities, quitting" << std::endl;
         return false;
