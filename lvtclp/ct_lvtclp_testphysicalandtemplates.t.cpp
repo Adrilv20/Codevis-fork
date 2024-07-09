@@ -295,6 +295,8 @@ TEST_CASE_METHOD(PhysicalAndTemplatesFixture, "Physical and Templates")
                                    {"-Igroups/bsl/bslma", "-Igroups/foo/foobar"},
                                    topLevel);
 
+    std::cout << "Top Level Source Dir:" << topLevel << std::endl;
+
     CppTool tool(topLevel, {}, cmds, ":memory:");
     REQUIRE(tool.runFull());
     ObjectStore& session = tool.getObjectStore();
