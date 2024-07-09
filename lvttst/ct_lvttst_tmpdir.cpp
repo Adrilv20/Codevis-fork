@@ -19,6 +19,7 @@
 
 #include <cassert>
 #include <ct_lvttst_tmpdir.h>
+#include <iostream>
 
 TmpDir::TmpDir(const std::string& dirname): tmp_dir(d_tmpDirQt.path().toStdString() + "/" + dirname)
 {
@@ -40,7 +41,9 @@ std::filesystem::path TmpDir::createDir(const std::string& dirname) const
 {
     auto p = path() / dirname;
     auto r = std::filesystem::create_directories(p);
-    (void) r;
+    if (!r) {
+        std::cout << "Could not create" << p << ", aborting." << std::endl;
+    }
     assert(r);
     return p;
 }
