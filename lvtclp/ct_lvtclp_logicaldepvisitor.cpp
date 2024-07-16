@@ -1034,12 +1034,20 @@ void LogicalDepVisitor::visitLocalVarDeclOrParam(clang::VarDecl *varDecl)
     const clang::FunctionDecl *funcDecl = nullptr;
 
     if ((methodDecl = clang::dyn_cast<clang::CXXMethodDecl>(declContext))) {
+#if defined(__linux__) || defined(__APPLE__)
         if (methodIsTemplateSpecialization(methodDecl)) {
             std::cout << "Method is template specializtion. returning." << std::endl;
             return;
         } else {
             std::cout << "Method is not specializtion.  keep going." << std::endl;
         }
+#else
+        // There's a difference between windows and unix llvm versions that
+        // makes the unix version go into a template function and examine it's contents
+        // on non-specializations. on windows this just happen for specializations.
+        // this will make the parsing slower on windows.
+        std::cout << "Windows only: we don't ignore template specialization."
+#endif
     } else {
         std ::cout << "Not a method, it's a function" << std::endl;
         funcDecl = clang::dyn_cast<clang::FunctionDecl>(declContext);
