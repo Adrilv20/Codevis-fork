@@ -316,9 +316,8 @@ lvtmdb::TypeObject *LogicalDepVisitor::lookupType(const clang::Decl *decl,
     // remove qualifiers
     qualType = qualType.getAtomicUnqualifiedType();
     qualType.removeLocalConst();
-
     if (qualType->isFunctionPointerType() || qualType->isFunctionReferenceType() || qualType->isMemberPointerType()
-        || qualType->isMemberFunctionPointerType()) {
+        || qualType->isMemberFunctionPointerType() || qualType->isTemplateTypeParmType()) {
         // TODO
         return nullptr;
     }
