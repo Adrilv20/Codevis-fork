@@ -1046,7 +1046,7 @@ void LogicalDepVisitor::visitLocalVarDeclOrParam(clang::VarDecl *varDecl)
         // makes the unix version go into a template function and examine it's contents
         // on non-specializations. on windows this just happen for specializations.
         // this will make the parsing slower on windows.
-        std::cout << "Windows only: we don't ignore template specialization."
+        std::cout << "Windows only: we don't ignore template specialization." << std::endl;
 #endif
     } else {
         std ::cout << "Not a method, it's a function" << std::endl;
