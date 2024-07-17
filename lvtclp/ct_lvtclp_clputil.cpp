@@ -226,6 +226,7 @@ std::filesystem::path ClpUtil::normalisePath(std::filesystem::path path, std::fi
         prefix = std::filesystem::weakly_canonical(prefix);
     }
 
+    std::cout << "After weakly canonical" << path << std::endl;
 #ifdef NDEBUG
     // the call to std::filesystem::weakly_canonical is expensive for the
     // amount of times we call it, but we are always passing `d->prefix` to it
