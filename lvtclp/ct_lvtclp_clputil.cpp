@@ -253,6 +253,7 @@ std::filesystem::path ClpUtil::normalisePath(std::filesystem::path path, std::fi
         path = FileUtil::nonPrefixPart(prefix, path);
     }
 
+    std::cout << "RETURNING " << path << std::endl;
     return path;
 }
 
