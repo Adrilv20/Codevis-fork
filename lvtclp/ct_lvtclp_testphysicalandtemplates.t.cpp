@@ -137,6 +137,11 @@ void testFilesExist(ObjectStore& session)
                   "groups/foo/foobar/foobar_somecomponent.cpp"};
 
     session.withROLock([&] {
+        const auto& internalFiles = session.files();
+        for (const auto& [key, file] : internalFiles) {
+            auto lock = file->readOnlyLock();
+            std::cout << "{\n\t" << key << "\n\t" << file->qualifiedName() << "\n}" << std::endl;
+        }
         for (auto const& file : files) {
             REQUIRE(session.getFile(file));
         }
