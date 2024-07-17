@@ -230,7 +230,9 @@ std::filesystem::path ClpUtil::normalisePath(std::filesystem::path path, std::fi
     }
 #else
     if (!path.empty()) {
+        std::cout << "RECEIVED" << path << std::endl;
         path = std::filesystem::weakly_canonical(path).generic_string();
+        std::cout << "RESULT" << path << std::endl;
     }
 
     if (!prefix.empty()) {
