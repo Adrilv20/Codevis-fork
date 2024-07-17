@@ -253,7 +253,10 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
         return nullptr;
     }
 
+    std::cout << "inFileName " << inFilename << std::endl;
     const std::filesystem::path path = normalisePath(inFilename, prefix);
+
+    std::cout << "Normalized " << path << std::endl;
     const std::string filename = path.string();
 
     lvtmdb::FileObject *ret = nullptr;
@@ -279,6 +282,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
         auto *package = getPackageForPath(path, memDb, prefix, nonLakosianDirs, thirdPartyDirs);
         auto *component = ComponentUtil::addComponent(path, package, memDb);
         auto *file = memDb.getOrAddFile(filename, path.filename().string(), isHeader, hash, package, component);
+        std::cout << "Adding to database: " << filename << " " << path << std::endl;
 
         component->withRWLock([&] {
             component->addFile(file);
