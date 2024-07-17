@@ -486,6 +486,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
             return "";
         }();
 
+        std::cout << "Found File" << path << " qual_name " << file.qualifiedName << std::endl;
         lvtmdb::FileObject *filePtr = d->memDb.getFile(path.string());
         if (!filePtr) {
             const FileType type = ClpUtil::categorisePath(path.string());
@@ -506,6 +507,9 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
 
             // create or fetch the component for this file
             lvtmdb::ComponentObject *comp = ComponentUtil::addComponent(path, parent, d->memDb);
+
+            std::cout << "Adding file to db:" << std::endl;
+            std::cout << path.string() << "\n" << path.filename().string() << std::endl;
 
             filePtr =
                 d->memDb.getOrAddFile(path.string(), path.filename().string(), isHeader, std::move(hash), parent, comp);
