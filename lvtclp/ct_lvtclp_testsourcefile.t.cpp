@@ -39,6 +39,11 @@ TEST_CASE("Source file")
 
     FileObject *source = nullptr;
     session.withROLock([&] {
+        for (const auto& [name, file] : session.files()) {
+            file->withROLock([&name, &file] {
+                std::cout << "File with key " << name << " and " << file->qualifiedName() << std::endl;
+            });
+        }
         source = session.getFile("test/SourceFile.cpp");
     });
 
