@@ -38,6 +38,7 @@
 #include <ct_lvtmdb_soci_writer.h>
 
 #include <QTemporaryDir>
+#include <QtGlobal>
 
 #include <ct_lvtshr_debug_categories.h>
 #include <pybind11/embed.h>
@@ -555,7 +556,14 @@ TEST_CASE_METHOD(FilesystemScannerFixture, "Non Lakosian")
             {(topLevel / "thirdparty/nonlakosian.cpp").string(), ""},
         },
         "compiler",
-        {"--unrelated", "-I../include", "-I/not/a/path"},
+        {"--unrelated",
+         "-I/not/a/path",
+#ifdef Q_OS_WINDOWS
+         "/I ..\include"
+#else
+         "-I../include"
+#endif
+        },
         topLevel);
 
     // scan
