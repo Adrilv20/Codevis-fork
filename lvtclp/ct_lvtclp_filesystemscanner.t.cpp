@@ -763,6 +763,7 @@ TEST_CASE_METHOD(FilesystemScannerFixture, "Semantic packing")
         for (auto *comp : myPkg->components()) {
             comp->withROLock([&] {
                 auto qname = comp->qualifiedName();
+                std::cout << comp->name() << " AND " << comp->qualifiedName() << std::endl;
                 INFO(qname);
                 REQUIRE((qname == "groups/one/onepkg/onepkg_foo" || qname == "groups/one/onepkg/onepkg_bar"
                          || qname == "groups/two/twofoo/twofoo_component"
