@@ -511,6 +511,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
             }
 
             // create or fetch the component for this file
+            std::cout << "Adding the component " << path << "\n";
             lvtmdb::ComponentObject *comp = ComponentUtil::addComponent(path, parent, d->memDb);
 
             filePtr =
