@@ -629,6 +629,11 @@ TEST_CASE_METHOD(FilesystemScannerFixture, "Non Lakosian")
         REQUIRE(source->package() == thirdparty);
     });
 
+    std::cout << "List all files" << std::endl;
+    for (const auto& [_2, file] : memDb.files()) {
+        auto lock = file->readOnlyLock();
+        std::cout << file->name() << " qual name " << file->qualifiedName() << std::endl;
+    }
     REQUIRE(memDb.getFile("include/nonlakosian.hpp"));
 
     // currently the header would be in a package called "include" inside
