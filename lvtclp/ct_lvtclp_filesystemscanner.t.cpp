@@ -553,17 +553,13 @@ TEST_CASE_METHOD(FilesystemScannerFixture, "Non Lakosian")
         {
             {(topLevel / "groups/one/onepkg/onepkg_foo.cpp").string(), ""},
             {(topLevel / "groups/one/onepkg/onepkg_bar.cpp").string(), ""},
+#ifdef Q_OS_WINDOWS
+            {(topLevel / "include/nonlakosian.hpp").string(), ""},
+#endif
             {(topLevel / "thirdparty/nonlakosian.cpp").string(), ""},
         },
         "compiler",
-        {"--unrelated",
-         "-I/not/a/path",
-#ifdef Q_OS_WINDOWS
-         "/I ..\include"
-#else
-         "-I../include"
-#endif
-        },
+        {"--unrelated", "-I/not/a/path", "-I../include"},
         topLevel);
 
     // scan
