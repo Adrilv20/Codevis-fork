@@ -494,25 +494,32 @@ bool ClpUtil::isComponentOnStandalonePackage(const std::filesystem::path& compon
     // <prefix>_<pkgname>_<component_name>. e.g.: ct_lvtclp_filesystemscanner.cpp
     auto hasStandaloneNameWithPkgPrefix =
         std::regex_search(componentPath.string(), std::regex{"/([a-zA-Z]{1,2})_([a-zA-Z0-9_]+)\\."});
-    if (hasStandaloneNameWithPkgPrefix) {
-        // In order to be a valid standalone package, the component must be inside a package containing it's prefix
-        auto componentName = QString::fromStdString(componentPath.filename().generic_string());
-        auto parentPkgName = QString::fromStdString(componentPath.parent_path().filename().generic_string());
-        if (componentName.startsWith(parentPkgName)) {
-            return true;
-        }
+    if (!hasStandaloneNameWithPkgPrefix) {
+        std::cout << "Package " << componentPath << "has no standalone name with pkg prefix." << std::endl;
+        return false;
+    }
 
-        // The containing package may be acceptable if it is named without the '<prefix>_' prefix.
-        // In other words, a component named '<prefix>_<pkgname>_<component_name>' can be inside a package named
-        // <pkgname>.
-        auto splitComponentName = componentName.split("_");
-        if (splitComponentName.size() >= 3) {
-            if (splitComponentName[1] == parentPkgName) {
-                return true;
-            }
+    // In order to be a valid standalone package, the component must be inside a package containing it's prefix
+    auto componentName = QString::fromStdString(componentPath.filename().generic_string());
+    auto parentPkgName = QString::fromStdString(componentPath.parent_path().filename().generic_string());
+    if (componentName.startsWith(parentPkgName)) {
+        return true;
+    }
+
+    // The containing package may be acceptable if it is named without the '<prefix>_' prefix.
+    // In other words, a component named '<prefix>_<pkgname>_<component_name>' can be inside a package named
+    // <pkgname>.
+    auto splitComponentName = componentName.split("_");
+    if (splitComponentName.size() >= 3) {
+        if (splitComponentName[1] == parentPkgName) {
+            return true;
         }
     }
 
+    std::cout << "Parent name" << parentPkgName.toStdString() << std::endl;
+    std::cout << "Component name" << componentName.toStdString() << std::endl;
+    std::cout << "Component lacks the other rules for standalone" << componentPath.generic_string() << std::endl;
+    ;
     return false;
 }
 
