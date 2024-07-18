@@ -493,7 +493,7 @@ bool ClpUtil::isComponentOnStandalonePackage(const std::filesystem::path& compon
     // Capture special component naming inside standalone package in the form
     // <prefix>_<pkgname>_<component_name>. e.g.: ct_lvtclp_filesystemscanner.cpp
     auto hasStandaloneNameWithPkgPrefix =
-        std::regex_search(componentPath.string(), std::regex{"/([a-zA-Z]{1,2})_([a-zA-Z0-9_]+)\\."});
+        std::regex_search(componentPath.generic_string(), std::regex{"/([a-zA-Z]{1,2})_([a-zA-Z0-9_]+)\\."});
     if (!hasStandaloneNameWithPkgPrefix) {
         std::cout << "Package " << componentPath << "has no standalone name with pkg prefix." << std::endl;
         return false;
