@@ -639,7 +639,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         }
         currentVirtualWorkPath = "${SOURCE_DIR}/";
         relativePath = QString::fromStdString(filepath).replace(QString::fromStdString(sourceDirectory.string()), "");
-        std::cout << "\t Relative path " << relativePath << std::endl;
+        std::cout << "\t Relative path " << relativePath.toStdString() << std::endl;
     } else {
         // Anything else will be moved to a global "external" pseudo-folder
         // TODO: Let the user provide more information regarding what is not "external".
@@ -675,7 +675,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         });
         parentPkg = newPkg;
     }
-    std::cout << "\tCalculated current currentVirtualWorkPath" << currentVirtualWorkPath;
+    std::cout << "\tCalculated current currentVirtualWorkPath" << currentVirtualWorkPath.toStdString() << std::endl;
     auto componentName = std::filesystem::path{filename.toStdString()}.stem().string();
     auto *component = memDb.getOrAddComponent(componentName, componentName, parentPkg);
     parentPkg->withRWLock([&]() {
