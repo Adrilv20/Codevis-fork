@@ -104,6 +104,8 @@ void HeaderCallbacks::InclusionDirective(clang::SourceLocation HashLoc,
 
     lvtmdb::FileObject *filePtr = nullptr;
     if (d_enableLakosianRules) {
+        std::cout << "Saving file with lakosian rules." << std::endl;
+        std::cout << "\t" << realPathStr << "\n\t" << d_prefix << std::endl;
         filePtr = ClpUtil::writeSourceFile(realPathStr, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
     } else {
         filePtr =
