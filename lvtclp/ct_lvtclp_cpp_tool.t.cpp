@@ -769,6 +769,13 @@ TEST_CASE("Test run tool with non-lakosian rules")
     };
 
     addLock(&memDb);
+
+    std::cout << "Found Files:" << std::endl;
+    for (auto& file : memDb.getAllFiles()) {
+        auto lock = file->readOnlyLock();
+        std::cout << "{\n\t" << file->qualifiedName() << "\n\t" << file->name() << "\n}" << std::endl;
+    }
+
     // Note: 6 files within the project, and 1 extra file hidden, added with `userProvidedExtraCompileCommandsArgs`
     REQUIRE(memDb.getAllFiles().size() == 7);
 

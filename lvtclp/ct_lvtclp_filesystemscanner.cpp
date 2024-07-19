@@ -156,6 +156,7 @@ FilesystemScanner::~FilesystemScanner() noexcept = default;
 
 FilesystemScanner::IncrementalResult FilesystemScanner::scanCompilationDb()
 {
+    std::cout << "Scanning the compilation DB" << std::endl;
     for (const std::string& string : d->cdb.getAllFiles()) {
         std::filesystem::path path(string);
 
@@ -163,6 +164,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::scanCompilationDb()
         path = path.generic_string();
 #endif
 
+        std::cout << "Path: " << path << std::endl;
         scanPath(path);
         scanHeader(path);
     }
