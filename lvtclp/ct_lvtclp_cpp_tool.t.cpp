@@ -747,6 +747,8 @@ TEST_CASE("Test run tool with non-lakosian rules")
 
     REQUIRE(std::filesystem::exists(res));
 
+    std::cout << "Setting up project path" << prjPath << std::endl;
+
     auto tool = CppTool(
         /*sourcePath=*/prjPath,
         /* buildPath=*/{},
