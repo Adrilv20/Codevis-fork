@@ -614,11 +614,12 @@ inline QString asLinuxPath(QString path)
 }
 
 lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
-                                             const std::string& filepath,
+                                             const std::string& fString,
                                              const std::filesystem::path& sourceDirectory,
                                              const std::filesystem::path& buildDirectory,
                                              const std::filesystem::path& inclusionPrefixPath)
 {
+    std::string filepath = std::filesystem::path{fString}.generic_string();
     std::cout << "Writing source file  for " << filepath << std::endl;
     auto memDbLock = memDb.rwLock();
 
