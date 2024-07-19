@@ -719,8 +719,9 @@ TEST_CASE("Run Tool store test-only dependencies")
 
 TEST_CASE("Test run tool with non-lakosian rules")
 {
-    auto const PREFIX = std::string{TEST_PRJ_PATH};
-    auto const prjPath = PREFIX + "/cpp_nonlakosian_test/";
+    auto const PREFIX = std::filesystem::path{TEST_PRJ_PATH};
+    auto const prjPath = (PREFIX / "cpp_nonlakosian_test/").generic_string();
+    std::cout << "Setting up the generic location" << prjPath << std::endl;
 
     auto tmpdir = TmpDir{"cpp_nonlakosian_test_builddir"};
     auto res = tmpdir.createTextFile("compile_commands.json",
