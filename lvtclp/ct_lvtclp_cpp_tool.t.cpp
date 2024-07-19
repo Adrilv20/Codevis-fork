@@ -719,7 +719,7 @@ TEST_CASE("Run Tool store test-only dependencies")
 
 TEST_CASE("Test run tool with non-lakosian rules")
 {
-    auto const PREFIX = std::string{TEST_PRJ_PATH};
+    auto const PREFIX = std::filesystem::canonical(std::filesystem::path{TEST_PRJ_PATH}).generic_string();
     auto const prjPath = PREFIX + "/cpp_nonlakosian_test/";
 
     auto tmpdir = TmpDir{"cpp_nonlakosian_test_builddir"};
@@ -748,8 +748,8 @@ TEST_CASE("Test run tool with non-lakosian rules")
 
     REQUIRE(std::filesystem::exists(res));
 
-    std::cout << "Setting up project path" << prjPath << std::endl;
-    std::cout << "And..." << std::filesystem::path(prjPath).generic_string();
+    std::cout << "Setting up project path " << prjPath << std::endl;
+    std::cout << "And... " << std::filesystem::path(prjPath).generic_string();
 
     auto tool = CppTool(
         /*sourcePath=*/prjPath,
