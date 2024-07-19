@@ -149,7 +149,7 @@ lvtmdb::PackageObject *getPackageForPath(const std::filesystem::path& path,
 
     bool isMapped = false;
     for (auto const& [mappedPathRegex, mappedGroupName] : thirdPartyDirs) {
-        if (std::regex_search(path.string(), std::regex{mappedPathRegex})) {
+        if (std::regex_search(path.generic_string(), std::regex{mappedPathRegex})) {
             topLevelPkgQualifiedName = mappedGroupName;
             topLevelPkgName = mappedGroupName;
             isMapped = true;
@@ -173,8 +173,8 @@ lvtmdb::PackageObject *getPackageForPath(const std::filesystem::path& path,
                     filePath.replace(projectSource, "${SOURCE_DIR}/");
                 }
             } else if (ClpUtil::isComponentOnPackageGroup(path)) {
-                topLevelPkgQualifiedName = ("groups" / pkgPath.parent_path().filename()).string();
-                topLevelPkgName = pkgPath.parent_path().filename().string();
+                topLevelPkgQualifiedName = ("groups" / pkgPath.parent_path().filename()).generic_string();
+                topLevelPkgName = pkgPath.parent_path().filename().generic_string();
 
                 if (filePath.startsWith(projectSource)) {
                     filePath.replace(projectSource, "${SOURCE_DIR}/");
@@ -264,7 +264,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
     if (inFilename.empty()) {
         return nullptr;
     }
-
+    std::cout << "Writting the source file" << inFilename << std::endl;
     const std::filesystem::path path = normalisePath(inFilename, prefix);
     const std::string filename = path.string();
 
