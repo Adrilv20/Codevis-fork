@@ -615,11 +615,14 @@ inline QString asLinuxPath(QString path)
 
 lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
                                              const std::string& fString,
-                                             const std::filesystem::path& sourceDirectory,
-                                             const std::filesystem::path& buildDirectory,
+                                             const std::filesystem::path& sourceDir,
+                                             const std::filesystem::path& buildDir,
                                              const std::filesystem::path& inclusionPrefixPath)
 {
     std::string filepath = std::filesystem::path{fString}.generic_string();
+    std::filesystem::path sourceDirectory = sourceDir.generic_string();
+    std::filesystem::path buildDirectory = buildDir.generic_string();
+
     std::cout << "Writing source file  for \n\t " << filepath << std::endl;
     std::cout << "Source directory: \n\t" << sourceDirectory << std::endl;
 
