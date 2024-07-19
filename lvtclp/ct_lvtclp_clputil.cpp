@@ -619,7 +619,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
                                              const std::filesystem::path& buildDirectory,
                                              const std::filesystem::path& inclusionPrefixPath)
 {
-    std::cout << "Writing source file ";
+    std::cout << "Writing source file  for " << filepath << std::endl;
     auto memDbLock = memDb.rwLock();
 
     auto const LINUX_SEP = QString{"/"}; // Uses linux separator even on Windows. Paths must be converted on Windows.
@@ -639,6 +639,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         }
         currentVirtualWorkPath = "${SOURCE_DIR}/";
         relativePath = QString::fromStdString(filepath).replace(QString::fromStdString(sourceDirectory.string()), "");
+        std::cout << "\t Relative path " << relativePath << std::endl;
     } else {
         // Anything else will be moved to a global "external" pseudo-folder
         // TODO: Let the user provide more information regarding what is not "external".
@@ -674,14 +675,14 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         });
         parentPkg = newPkg;
     }
-
+    std::cout << "\tCalculated current currentVirtualWorkPath" << currentVirtualWorkPath;
     auto componentName = std::filesystem::path{filename.toStdString()}.stem().string();
     auto *component = memDb.getOrAddComponent(componentName, componentName, parentPkg);
     parentPkg->withRWLock([&]() {
         parentPkg->addComponent(component);
     });
 
-    std::cout << " " << (currentVirtualWorkPath + filename).toStdString() << std::endl;
+    std::cout << "Calculated file " << (currentVirtualWorkPath + filename).toStdString() << std::endl;
     auto *file = memDb.getOrAddFile(
         /*qualifiedName=*/(currentVirtualWorkPath + filename).toStdString(),
         /*name=*/(currentVirtualWorkPath + filename).toStdString(),
