@@ -332,12 +332,12 @@ void FilesystemScanner::scanPath(const std::filesystem::path& path)
         std::cout << "Processing with non lakosian rules" << std::endl;
     } else {
         std::cout << "Processing with non lakosian rules" << std::endl;
-        std::cout << "Path " << path.string() << std::endl;
+        std::cout << "Path " << path.generic_string() << std::endl;
         std::cout << "Prefix " << d->prefix.string() << std::endl;
         std::cout << "BuildPath " << d->buildPath.string() << std::endl;
         std::cout << "---------" << std::endl;
         nonLakosian::ClpUtil::writeSourceFile(d->memDb,
-                                              path.string(),
+                                              path.generic_string(),
                                               d->prefix.string(),
                                               d->buildPath.string(),
                                               d->prefix.string());
