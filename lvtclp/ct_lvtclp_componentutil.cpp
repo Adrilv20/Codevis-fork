@@ -42,11 +42,13 @@ lvtmdb::ComponentObject *ComponentUtil::addComponent(const std::filesystem::path
     const std::string qualifiedName = [&]() {
         // Temporary solution to recognize lakosian packages
         {
+            std::cout << "Trying to get the parent qualifide name." << std::endl;
             auto parentQualName = std::string{};
             parent->withROLock([&]() {
                 parentQualName = parent->qualifiedName();
             });
 
+            std::cout << "Parent qualified name is" << parentQualName << std::endl;
             auto contains = [](std::string const& str1, std::string const& str2) {
                 return str1.find(str2) != std::string::npos;
             };
@@ -56,6 +58,7 @@ lvtmdb::ComponentObject *ComponentUtil::addComponent(const std::filesystem::path
             }
         }
 
+        std::cout << "And returning here, on the wrong place" << std::endl;
         return (filePath.parent_path() / name).generic_string();
     }();
 
