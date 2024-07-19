@@ -183,6 +183,9 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
         d_commonParent(std::move(sourcePath)),
         d_buildPath(buildPath)
     {
+        std::cout << "Creating a Partial Compilation Database." << std::endl;
+        std::cout << "Source Path" << sourcePath << std::endl;
+        std::cout << "Build Path" << buildPath << std::endl;
     }
 
     void setIgnoreGlobs(const std::vector<llvm::GlobPattern>& ignoreGlobs)
