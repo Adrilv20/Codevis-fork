@@ -675,14 +675,14 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         });
         parentPkg = newPkg;
     }
-    std::cout << "\tCalculated current currentVirtualWorkPath" << currentVirtualWorkPath.toStdString() << std::endl;
+    std::cout << "\tCalculated current currentVirtualWorkPath " << currentVirtualWorkPath.toStdString() << std::endl;
     auto componentName = std::filesystem::path{filename.toStdString()}.stem().string();
     auto *component = memDb.getOrAddComponent(componentName, componentName, parentPkg);
     parentPkg->withRWLock([&]() {
         parentPkg->addComponent(component);
     });
 
-    std::cout << "Calculated file " << (currentVirtualWorkPath + filename).toStdString() << std::endl;
+    std::cout << "\tCalculated file " << (currentVirtualWorkPath + filename).toStdString() << std::endl;
     auto *file = memDb.getOrAddFile(
         /*qualifiedName=*/(currentVirtualWorkPath + filename).toStdString(),
         /*name=*/(currentVirtualWorkPath + filename).toStdString(),
