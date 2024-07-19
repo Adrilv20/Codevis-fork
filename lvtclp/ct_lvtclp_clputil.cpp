@@ -619,6 +619,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
                                              const std::filesystem::path& buildDirectory,
                                              const std::filesystem::path& inclusionPrefixPath)
 {
+    std::cout << "Writing source file ";
     auto memDbLock = memDb.rwLock();
 
     auto const LINUX_SEP = QString{"/"}; // Uses linux separator even on Windows. Paths must be converted on Windows.
@@ -680,6 +681,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
         parentPkg->addComponent(component);
     });
 
+    std::cout << " " << (currentVirtualWorkPath + filename).toStdString() << std::endl;
     auto *file = memDb.getOrAddFile(
         /*qualifiedName=*/(currentVirtualWorkPath + filename).toStdString(),
         /*name=*/(currentVirtualWorkPath + filename).toStdString(),

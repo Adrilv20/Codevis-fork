@@ -164,7 +164,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::scanCompilationDb()
         path = path.generic_string();
 #endif
 
-        std::cout << "Path: " << path << std::endl;
+        std::cout << "Compilation Db Path: " << path << std::endl;
         scanPath(path);
         scanHeader(path);
     }
