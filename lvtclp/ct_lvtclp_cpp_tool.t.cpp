@@ -627,6 +627,19 @@ TEST_CASE("Run Tool on project including other lakosian project")
 
     REQUIRE(tool.runFull());
     session.withROLock([&] {
+        std::cout << "All Files" << std::endl;
+        for (auto& file : session.getAllFiles()) {
+            auto lock = file->readOnlyLock();
+            std::cout << file->qualifiedName() << std::endl;
+        }
+
+        std::cout << "\n All Components" << std::endl;
+        for (const auto& [_, comp] : session.components()) {
+            std::ignore = _;
+            auto lock = comp->readOnlyLock();
+            std::cout << comp->qualifiedName() << std::endl;
+        }
+
         REQUIRE(session.getFile("groups/one/oneaaa/oneaaa_comp.cpp"));
         REQUIRE(session.getFile("groups/one/oneaaa/oneaaa_comp.h"));
         REQUIRE(session.getComponent("groups/one/oneaaa/oneaaa_comp"));
