@@ -48,7 +48,7 @@ lvtmdb::ComponentObject *ComponentUtil::addComponent(const std::filesystem::path
                 parentQualName = parent->qualifiedName();
             });
 
-            std::cout << "Parent qualified name is" << parentQualName << std::endl;
+            std::cout << "Parent qualified name is " << parentQualName << std::endl;
             auto contains = [](std::string const& str1, std::string const& str2) {
                 return str1.find(str2) != std::string::npos;
             };
