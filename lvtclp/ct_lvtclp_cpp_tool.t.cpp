@@ -32,6 +32,8 @@
 #include <fstream>
 #include <initializer_list>
 
+#include <QtGlobal>
+
 #include <catch2-local-includes.h>
 
 #include <autogen-test-variables.h>
@@ -831,10 +833,12 @@ TEST_CASE("Test run tool with non-lakosian rules")
     }
 }
 
+#ifndef Q_OS_WINDOWS
 // cstddef and stddef.h files are a pain to get it right
 // because they depend on specific, compile-defined, paths
 // the code currently tries to find that to be able to feed
 // clang the correct information
+// No need to run this on windows, this test Unix specific code
 TEST_CASE("cstddef test")
 {
     StaticCompilationDatabase cmds({{"hello.m.cpp", "hello.m.o"}}, "placeholder", {}, PREFIX + "/cstddef_test/");
@@ -850,3 +854,4 @@ TEST_CASE("cstddef test")
     });
     REQUIRE(file);
 }
+#endif
