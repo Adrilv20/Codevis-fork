@@ -28,6 +28,7 @@
 #include <ct_lvtmdb_packageobject.h>
 #include <ct_lvtmdb_typeobject.h>
 
+#include <filesystem>
 #include <fstream>
 #include <initializer_list>
 
@@ -748,6 +749,7 @@ TEST_CASE("Test run tool with non-lakosian rules")
     REQUIRE(std::filesystem::exists(res));
 
     std::cout << "Setting up project path" << prjPath << std::endl;
+    std::cout << "And..." << std::filesystem::path(prjPath).generic_string();
 
     auto tool = CppTool(
         /*sourcePath=*/prjPath,
