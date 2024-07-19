@@ -620,7 +620,9 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(lvtmdb::ObjectStore& memDb,
                                              const std::filesystem::path& inclusionPrefixPath)
 {
     std::string filepath = std::filesystem::path{fString}.generic_string();
-    std::cout << "Writing source file  for " << filepath << std::endl;
+    std::cout << "Writing source file  for \n\t " << filepath << std::endl;
+    std::cout << "Source directory: \n\t" << sourceDirectory << std::endl;
+
     auto memDbLock = memDb.rwLock();
 
     auto const LINUX_SEP = QString{"/"}; // Uses linux separator even on Windows. Paths must be converted on Windows.
