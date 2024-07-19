@@ -86,13 +86,14 @@ void HeaderCallbacks::InclusionDirective(clang::SourceLocation HashLoc,
     }
 #endif
 
-    auto realPathStr =
+    auto realPathStr = std::filesystem::path(
 #if CLANG_VERSION_MAJOR >= 15
-        File.value().getFileEntry().tryGetRealPathName().str()
+                           File.value().getFileEntry().tryGetRealPathName().str()
 #else
-        File->tryGetRealPathName().str()
+                           File->tryGetRealPathName().str()
 #endif
-        ;
+                               )
+                           .generic_string();
 
     if (d_sourceFile_p == nullptr) {
         return;
@@ -106,7 +107,12 @@ void HeaderCallbacks::InclusionDirective(clang::SourceLocation HashLoc,
     if (d_enableLakosianRules) {
         std::cout << "Saving file with lakosian rules." << std::endl;
         std::cout << "\t" << realPathStr << "\n\t" << d_prefix << std::endl;
-        filePtr = ClpUtil::writeSourceFile(realPathStr, true, d_memDb, d_prefix, d_nonLakosianDirs, d_thirdPartyDirs);
+        filePtr = ClpUtil::writeSourceFile(realPathStr,
+                                           true,
+                                           d_memDb,
+                                           d_prefix.generic_string(),
+                                           d_nonLakosianDirs,
+                                           d_thirdPartyDirs);
     } else {
         filePtr =
             nonLakosian::ClpUtil::writeSourceFile(d_memDb, realPathStr, d_prefix, d_buildPath, RelativePath.str());
