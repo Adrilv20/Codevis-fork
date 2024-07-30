@@ -163,6 +163,8 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
         return true; // RETURN
     }
 
+    std::cout << "Visited Namespace " << name << std::endl;
+
     std::string qualifiedName = namespaceDecl->getQualifiedNameAsString();
     std::string parentName = qualifiedName.substr(0, qualifiedName.length() - name.length() - 2);
 
@@ -170,6 +172,7 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
     d_memDb.withROLock([&] {
         namespacePtr = d_memDb.getNamespace(qualifiedName);
     });
+
     if (!namespacePtr) {
         lvtmdb::NamespaceObject *parentNamespace = nullptr;
         d_memDb.withRWLock([&] {
@@ -178,6 +181,8 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
         });
         if (parentNamespace) {
             parentNamespace->withRWLock([&] {
+                std::cout << "It has a parent: " << parentName << std::endl;
+                ;
                 parentNamespace->addChild(namespacePtr);
             });
         }
@@ -186,6 +191,7 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
     const clang::SourceManager& srcMgr = Context->getSourceManager();
     std::string sourceFile = ClpUtil::getRealPath(namespaceDecl->getLocation(), srcMgr);
 
+    std::cout << "File for namespace " << sourceFile << std::endl;
     lvtmdb::FileObject *filePtr = [&]() {
         if (d_constants.enableLakosianRules) {
             return ClpUtil::writeSourceFile(sourceFile,
@@ -208,10 +214,13 @@ bool LogicalDepVisitor::VisitNamespaceDecl(clang::NamespaceDecl *namespaceDecl)
             namespacePtr->addFile(filePtr);
         });
     }
+
     filePtr->withRWLock([&] {
+        std::cout << "Adding namespace to file." << std::endl;
         filePtr->addNamespace(namespacePtr);
     });
 
+    std::cout << std::endl;
     return true;
 }
 
