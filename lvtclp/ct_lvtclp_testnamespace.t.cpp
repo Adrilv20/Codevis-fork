@@ -68,16 +68,24 @@ TEST_CASE("Parent namespace")
     NamespaceObject *foo = nullptr;
     NamespaceObject *bar = nullptr;
     FileObject *file = nullptr;
+    std::vector<FileObject *> files;
 
     session.withROLock([&] {
         foo = session.getNamespace("foo");
         bar = session.getNamespace("foo::bar");
         file = session.getFile("testParentNamespace.cpp");
+        files = session.getAllFiles();
     });
 
     REQUIRE(foo);
     REQUIRE(bar);
     REQUIRE(file);
+
+    std::cout << "All Files: ";
+    for (FileObject *nm : files) {
+        auto lock = nm->readOnlyLock();
+        std::cout << "\t" << nm->name() << std::endl;
+    }
 
     foo->withROLock([&] {
         REQUIRE(foo->name() == "foo");
@@ -97,8 +105,7 @@ TEST_CASE("Parent namespace")
     // check both namespaces were added to the file
     std::vector<NamespaceObject *> namespaces;
     file->withROLock([&] {
-        std::cout << "Test file name:  " << file->name() << std::endl;
-        ;
+        std::cout << "Test file name:  " << file << file->name() << std::endl;
         namespaces = file->namespaces();
     });
 
@@ -110,6 +117,7 @@ TEST_CASE("Parent namespace")
 
     auto it = std::find(namespaces.begin(), namespaces.end(), foo);
     REQUIRE(it != namespaces.end());
+
     it = std::find(namespaces.begin(), namespaces.end(), bar);
     REQUIRE(it != namespaces.end());
 

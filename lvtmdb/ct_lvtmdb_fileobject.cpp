@@ -109,7 +109,7 @@ void FileObject::setHash(std::string hash)
 void FileObject::addNamespace(NamespaceObject *nmspc)
 {
     assertWritable();
-    std::cout << "File " << name() << " adding a namespace directly with push back unique" << std::endl;
+    std::cout << "File " << this << name() << " adding a namespace directly with push back unique" << std::endl;
     MdbUtil::pushBackUnique(d_namespaces, nmspc);
 }
 

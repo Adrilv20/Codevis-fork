@@ -259,6 +259,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
         return {};
     }();
 
+    std::cout << "Writing or retrieving file " << inFilename << std::endl;
     auto file = memDb.withRWLock([&]() {
         auto *package = getPackageForPath(path, memDb, prefix, nonLakosianDirs, thirdPartyDirs);
         auto *component = ComponentUtil::addComponent(path, package, memDb);

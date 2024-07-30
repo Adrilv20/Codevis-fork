@@ -242,9 +242,11 @@ FileObject *ObjectStore::getOrAddFile(const std::string& qualifiedName,
 {
     assertWritable();
     if (FileObject *ret = getFile(qualifiedName)) {
+        std::cout << "File already exists, returning" << std::endl;
         return ret;
     }
 
+    std::cout << "Actually adding the file to the database" << std::endl;
     return add(
         d->files.store,
         qualifiedName,
