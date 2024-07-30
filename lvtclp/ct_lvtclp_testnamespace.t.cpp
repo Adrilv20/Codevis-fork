@@ -97,8 +97,16 @@ TEST_CASE("Parent namespace")
     // check both namespaces were added to the file
     std::vector<NamespaceObject *> namespaces;
     file->withROLock([&] {
+        std::cout << "Test file name:  " << file->name() << std::endl;
+        ;
         namespaces = file->namespaces();
     });
+
+    std::cout << "Number of namespaces on file " << namespaces.size() << std::endl;
+    for (NamespaceObject *nm : namespaces) {
+        auto lock = nm->readOnlyLock();
+        std::cout << "\t" << nm->name() << std::endl;
+    }
 
     auto it = std::find(namespaces.begin(), namespaces.end(), foo);
     REQUIRE(it != namespaces.end());
