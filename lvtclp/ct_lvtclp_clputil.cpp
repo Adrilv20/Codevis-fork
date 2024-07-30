@@ -237,7 +237,13 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
     if (inFilename.empty()) {
         return nullptr;
     }
+    std::cout << "Before normalization" << std::endl;
     const std::filesystem::path path = normalisePath(inFilename, prefix);
+    std::cout << "\t" << inFilename << " \n\t" << prefix << std::endl;
+
+    std::cout << "After normalization" << std::endl;
+    std::cout << "\t" << path << std::endl;
+
     const std::string filename = path.string();
 
     lvtmdb::FileObject *ret = nullptr;
