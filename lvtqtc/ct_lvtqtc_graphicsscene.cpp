@@ -1239,11 +1239,12 @@ void GraphicsScene::finalizeEntityPartialLoad(LakosEntity *entity)
 using Node = Codevis::PluginSystem::IGraphicsLayoutPlugin::Node;
 using Graph = Codevis::PluginSystem::IGraphicsLayoutPlugin::Graph;
 
-Node nodeFromEntity(LakosEntity *entity, const std::string& parentQualifiedName)
+Node nodeFromEntity(LakosEntity *entity, intptr_t parentId, QMultiHash<intptr_t, intptr_t>& connections)
 {
     QList<Node> nodes;
 
-    auto thisNode = Codevis::PluginSystem::IGraphicsLayoutPlugin::Node{.parentQualifiedName = parentQualifiedName,
+    auto thisNode = Codevis::PluginSystem::IGraphicsLayoutPlugin::Node{.id = reinterpret_cast<intptr_t>(entity),
+                                                                       .parentId = parentId,
                                                                        .children = {},
                                                                        .qualifiedName = entity->qualifiedName(),
                                                                        .rect = entity->boundingRect(),
@@ -1254,8 +1255,12 @@ Node nodeFromEntity(LakosEntity *entity, const std::string& parentQualifiedName)
             continue;
         }
 
-        auto childNode = nodeFromEntity(childEntity, thisNode.qualifiedName);
+        auto childNode = nodeFromEntity(childEntity, thisNode.id, connections);
         nodes.append(childNode);
+    }
+
+    for (auto edge : entity->edgesCollection()) {
+        connections.insert(reinterpret_cast<intptr_t>(edge->from()), reinterpret_cast<intptr_t>(edge->to()));
     }
 
     thisNode.children = nodes;
@@ -1265,18 +1270,17 @@ Node nodeFromEntity(LakosEntity *entity, const std::string& parentQualifiedName)
 Graph generateGraph(QList<LakosEntity *> topLevel)
 {
     QList<Node> nodes;
+    QMultiHash<intptr_t, intptr_t> connections;
+
     for (auto *entity : topLevel) {
-        auto node = nodeFromEntity(entity, std::string{});
+        auto node = nodeFromEntity(entity, 0, connections);
         nodes.append(node);
     }
-
-    // calculate connections.
-    QHash<QString, QString> connections;
 
     // Return the graph.
     return Graph{.rect = QRectF(),
                  .topLevelNodes = nodes,
-                 .connection = connections,
+                 .connections = connections,
                  .topLevelQualifiedName = std::nullopt};
 }
 

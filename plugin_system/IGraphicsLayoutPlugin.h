@@ -14,7 +14,8 @@ class PLUGINSYSTEMHEADERS_EXPORT IGraphicsLayoutPlugin {
   public:
     // The graph representation used by this plugin.
     struct Node {
-        std::string parentQualifiedName;
+        intptr_t id; // Maps to the pointer of the actual object
+        intptr_t parentId; // Maps to the pointer of the Parent
         QList<Node> children;
         std::string qualifiedName;
         QRectF rect;
@@ -26,7 +27,7 @@ class PLUGINSYSTEMHEADERS_EXPORT IGraphicsLayoutPlugin {
     struct Graph {
         QRectF rect;
         QList<Node> topLevelNodes;
-        QHash<QString, QString> connection;
+        QMultiHash<intptr_t, intptr_t> connections; // Table of connections between each node identified by id.
         std::optional<QString> topLevelQualifiedName;
     };
 
