@@ -836,31 +836,6 @@ QList<QAction *> LakosEntity::actionsForMenu(QPointF scenePosition)
         retValues.append(action);
     }
 
-#if 0
-    if (isExpanded()) {
-        auto *action = new QAction(tr("Layout"));
-        auto *layoutMenu = new QMenu();
-        action->setMenu(layoutMenu);
-        auto *verticalLayout = new QAction(tr("Vertical"));
-
-        connect(verticalLayout, &QAction::triggered, this, [this, scenePosition] {
-            auto direction = Preferences::invertVerticalLevelizationLayout() ? +1 : -1;
-            levelizationLayout(LevelizationLayoutType::Vertical, direction, scenePosition);
-            Q_EMIT graphUpdate();
-        });
-        layoutMenu->addAction(verticalLayout);
-
-        auto *horizontalLayout = new QAction(tr("Horizontal"));
-        connect(horizontalLayout, &QAction::triggered, this, [this, scenePosition] {
-            auto direction = Preferences::invertHorizontalLevelizationLayout() ? +1 : -1;
-            levelizationLayout(LevelizationLayoutType::Horizontal, direction, scenePosition);
-            Q_EMIT graphUpdate();
-        });
-        layoutMenu->addAction(horizontalLayout);
-
-        retValues.append(action);
-    }
-#else
     if (isExpanded()) {
         auto *action = new QAction("Layout Algorithms");
         auto *layoutMenu = new QMenu();
@@ -877,7 +852,6 @@ QList<QAction *> LakosEntity::actionsForMenu(QPointF scenePosition)
         }
         retValues.append(action);
     }
-#endif
 
     auto *action = new QAction();
     action->setText(tr("Navigate to %1").arg(QString::fromStdString(d->qualifiedName)));
