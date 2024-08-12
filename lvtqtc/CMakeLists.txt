@@ -31,7 +31,6 @@ AddTargetLibrary(
 
         # Algorithms:
         ct_lvtqtc_alg_transitive_reduction.cpp
-        ct_lvtqtc_alg_level_layout.cpp
 
         # Components:
         ct_lvtqtc_componententity.cpp
@@ -76,7 +75,6 @@ AddTargetLibrary(
         QT_HEADERS
         ct_lvtqtc_undo_manager.h
         ct_lvtqtc_alg_transitive_reduction.h
-        ct_lvtqtc_alg_level_layout.h
 
         ct_lvtqtc_componententity.h
         ct_lvtqtc_edgecollection.h
