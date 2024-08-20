@@ -141,6 +141,13 @@ message("-- LLVM Version: ${LLVM_VERSION}")
 find_package(libzip REQUIRED)
 
 if (BUILD_DESKTOP_APP)
+    if (QT_MAJOR_VERSION STREQUAL "5")
+        set(BUILD_DESKTOP_APP FALSE CACHE BOOL "Build the Desktop App" FORCE)
+        MESSAGE("We do not support the desktop app in Qt5 anymore. Some API's changed too much.")
+    endif()
+endif()
+
+if (BUILD_DESKTOP_APP)
     find_package(Qt${QT_MAJOR_VERSION} CONFIG REQUIRED COMPONENTS Gui Widgets Qml Svg)
 
     if(KF_MAJOR_VERSION STREQUAL "6")
@@ -163,7 +170,6 @@ if (BUILD_DESKTOP_APP)
         OPTIONAL_COMPONENTS
         DocTools
     )
-
 
     # KF5 doesn't have split version, so we build it here
     string(REPLACE "." ";" VERSION_LIST "${KF${KF_MAJOR_VERSION}_VERSION}")
@@ -342,7 +348,6 @@ add_subdirectory(lvtshr)
 add_subdirectory(lvttst)
 add_subdirectory(project_helpers)
 add_subdirectory(cliapps)
-add_subdirectory(plugin_system)
 
 if (BUILD_DESKTOP_APP)
     kconfig_add_kcfg_files(CONFIGURATION_SRCS GENERATE_MOC preferences.kcfgc)
@@ -373,6 +378,7 @@ if (BUILD_DESKTOP_APP)
     if (ENABLE_PLUGINS)
         add_subdirectory(lvtplg)
         add_subdirectory(plugins)
+        add_subdirectory(plugin_system)
     endif()
 
     add_subdirectory(lvtcgn)
