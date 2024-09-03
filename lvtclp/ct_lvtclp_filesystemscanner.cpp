@@ -39,8 +39,10 @@
 #include <QtGlobal>
 
 #include <llvm/Support/FileSystem.h>
+#include <llvm/Support/xxhash.h>
 
 #include <cassert>
+#include <fstream>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -68,6 +70,31 @@ struct FoundThingHash {
         return std::hash<std::string>{}(thing.parent + thing.qualifiedName);
     }
 };
+
+std::string xxhash(const std::filesystem::path& path)
+{
+    try {
+        std::ifstream file(path, std::ios::binary);
+        if (!file) {
+            return "";
+        }
+
+        std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+        uint64_t hash_value = llvm::xxh3_64bits(llvm::StringRef(content));
+
+        static constexpr char hex_chars[] = "0123456789abcdef";
+        std::string result(16, '0');
+
+        for (int i = 15; i >= 0; --i) {
+            result[i] = hex_chars[hash_value & 0xf];
+            hash_value >>= 4;
+        }
+        return result;
+    } catch (const std::exception&) {
+        return "";
+    }
+}
 
 } // namespace
 
@@ -444,15 +471,7 @@ FilesystemScanner::IncrementalResult FilesystemScanner::addToDatabase()
         const std::filesystem::path path = ClpUtil::normalisePath(file.qualifiedName, d->constants.prefix).string();
 
         std::filesystem::path fullPath = d->constants.prefix / path;
-        auto hash = [&fullPath]() -> std::string {
-            auto result = llvm::sys::fs::md5_contents(fullPath.string());
-            if (result) {
-                return result.get().digest().str().str();
-            }
-
-            // allow failure to hash file contents because we use memory mapped files in tests
-            return "";
-        }();
+        auto hash = xxhash(fullPath);
 
         lvtmdb::FileObject *filePtr = d->memDb.getFile(path.string());
         if (!filePtr) {
