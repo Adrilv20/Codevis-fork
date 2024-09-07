@@ -28,6 +28,8 @@
 #include <fortran/ct_lvtclp_fortran_tool.h>
 #endif
 
+#include "java/ct_lvtclp_java_tool.h"
+
 #include <clang/Tooling/JSONCompilationDatabase.h>
 #include <ct_lvtmdb_functionobject.h>
 #include <ct_lvtmdb_soci_reader.h>
@@ -461,6 +463,14 @@ int main(int argc, char **argv)
         }
     }
 
+#if 1
+    std::cout << "We are doing java";
+    auto j_tool = Codethink::lvtclp_java::Tool(args.sourcePath);
+    // if(Codethink::lvtclp_java::Tool::isJavaProject(args.sourcePath)){
+    //     std::cout << "Starting code";
+    // }
+    // auto j_tool = Codethink::lvtclp::java::JavaTool();
+#else
     if (args.compilationCommand.isObject() && !args.compilationDbPaths.empty()) {
         std::cerr << "Choose only a compile command or the compile-commands.json file.\n";
         return EXIT_FAILURE;
@@ -575,5 +585,6 @@ int main(int argc, char **argv)
         }
         sharedObjectStore->writeToDatabase(writer);
     }
+#endif
     return EXIT_SUCCESS;
 }

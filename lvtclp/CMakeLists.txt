@@ -45,7 +45,8 @@ else()
         LLVM
     )
 endif()
-
+# target_include_directories(lvtclp PRIVATE /usr/include/antlr4-runtime)
+# link_directories(/usr/lib64)
 AddTargetLibrary(
     LIBRARY_NAME
         lvtclp
@@ -67,6 +68,12 @@ AddTargetLibrary(
         ct_lvtclp_visitlog.cpp
         ct_lvtclp_threadstringmap.cpp
         ct_lvtclp_parse_error_handler.cpp
+        # todo move it to a separate CMakeLists file
+        java/ct_lvtclp_java_tool.cpp
+        java/Java8Lexer.cpp
+        java/Java8Parser.cpp
+        java/Java8ParserVisitor.cpp
+        java/Java8ParserVisitor.h
     HEADERS
         ct_lvtclp_clputil.h
         ct_lvtclp_compilerutil.h
@@ -84,6 +91,12 @@ AddTargetLibrary(
         ct_lvtclp_threadstringmap.h
         ct_lvtclp_cpp_tool.h
         ct_lvtclp_parse_error_handler.h
+        # todo move it to a separate CMakeLists file
+        java/ct_lvtclp_java_tool.h
+        java/Java8Lexer.h
+        java/Java8Parser.cpp
+        java/Java8ParserVisitor.h
+        java/Java8ParserBaseVisitor.h
     LIBRARIES
         Codethink::lvtmdb
         Codethink::lvtprj
@@ -93,6 +106,9 @@ AddTargetLibrary(
         Qt${QT_MAJOR_VERSION}::Core
         Python::Python
 )
+
+
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set_target_properties(lvtclp
         PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${SKIP_CLANG_WARNINGS}"
@@ -269,6 +285,12 @@ elseif (WIN32)
     # Winbdows threats directories without the first \ as relatives to the current folder.
     add_compile_definitions(CT_CLANG_HEADERS_RELATIVE_DIR="clang")
 endif()
+
+# set(ENABLE_JAVA_SCANNER ON)
+# if(ENABLE_JAVA_SCANNER)
+#     add_subdirectory(java)
+# endif()
+
 
 if (ENABLE_FORTRAN_SCANNER)
     MESSAGE("Fortran support ENABLED")
