@@ -43,6 +43,7 @@
 #include <vector>
 
 #include <QDebug>
+#include <QElapsedTimer>
 
 Q_LOGGING_CATEGORY(LogTool, "log.cpp_tool")
 
@@ -63,7 +64,7 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
   private:
     // DATA
     std::vector<std::string> d_files;
-    std::vector<std::filesystem::path> d_paths;
+    std::unordered_set<std::filesystem::path> d_paths;
     std::unordered_set<std::string> d_components;
     std::unordered_set<std::string> d_pkgs;
     std::optional<std::filesystem::path> d_prefix;
@@ -74,7 +75,7 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
         return d_files;
     }
 
-    const std::vector<std::filesystem::path>& paths() const
+    const std::unordered_set<std::filesystem::path>& paths() const
     {
         return d_paths;
     }
@@ -90,7 +91,7 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
     void shrinkToFit()
     {
         d_files.shrink_to_fit();
-        d_paths.shrink_to_fit();
+        // d_paths.shrink_to_fit();
         // d_components: no shrink_to_fit for std::unordered_set
         // d_pkgs: no shrink_to_fit for std::unordered_set
     }
@@ -100,14 +101,13 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
     {
         using Codethink::lvtclp::FileType;
 
-        const auto it = std::find(d_paths.begin(), d_paths.end(), path);
-        if (it != d_paths.end()) {
+        const auto [it, inserted] = d_paths.insert(path);
+        if (!inserted) {
             return;
         }
 
         // we store multiple copies of the path in different formats so we only
         // have to pay for the conversions once
-        d_paths.push_back(path);
         d_files.push_back(path.string());
 
         std::filesystem::path component(path);
@@ -169,6 +169,7 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
     std::vector<std::string> d_ignoreGlobs;
     std::function<void(const std::string&, long)> d_messageCallback;
     std::vector<clang::tooling::CompileCommand> d_compileCommands;
+    std::unordered_map<std::string, int> d_filenameToCompileCommandIdx;
     std::filesystem::path d_commonParent;
     std::filesystem::path d_buildPath;
     std::vector<llvm::GlobPattern> d_ignorePatterns;
@@ -196,6 +197,9 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
                const std::vector<std::string>& userProvidedExtraArgs,
                bool printToConsole)
     {
+        std::cout << "Partial Compilation Database Setup Started" << std::endl;
+        QElapsedTimer timer;
+        timer.start();
         using Codethink::lvtclp::CompilerUtil;
         std::vector<std::string> sysIncludes;
 
@@ -206,7 +210,8 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
                     && CompilerUtil::weNeedSystemHeaders());
 
             if (searchForHeaders) {
-                sysIncludes = CompilerUtil::findSystemIncludes();
+                // Check if we will need to run this for every compile commands.
+                sysIncludes = CompilerUtil::findSystemIncludes(d_compileCommands[0].CommandLine[0]);
                 for (std::string& include : sysIncludes) {
                     std::string arg;
                     arg.append("-isystem").append(include);
@@ -230,6 +235,7 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
 
             std::end(d_compileCommands));
 
+        int idx = 0;
         for (auto& cmd : d_compileCommands) {
             std::filesystem::path path = std::filesystem::weakly_canonical(cmd.Filename);
             addPath(path);
@@ -258,10 +264,14 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
 
             // add extra (user provided) includes
             std::copy(userProvidedExtraArgs.begin(), userProvidedExtraArgs.end(), std::back_inserter(cmd.CommandLine));
+
+            d_filenameToCompileCommandIdx[cmd.Filename] = idx;
+            idx += 1;
         }
 
         shrinkToFit();
         setPrefix(d_commonParent);
+        std::cout << "Partial Database Setup Finished" << timer.elapsed() << std::endl;
     }
 
     // ACCESSORS
@@ -272,12 +282,12 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
 
     std::vector<clang::tooling::CompileCommand> getCompileCommands(llvm::StringRef FilePath) const override
     {
-        for (auto const& cmd : d_compileCommands) {
-            if (cmd.Filename == FilePath) {
-                return {cmd};
-            }
+        try {
+            int idx = d_filenameToCompileCommandIdx.at(FilePath.str());
+            return {d_compileCommands[idx]};
+        } catch (...) {
+            return {};
         }
-        return {};
     }
 
     std::vector<std::string> getAllFiles() const override
@@ -512,6 +522,9 @@ bool CppTool::processCompilationDatabase()
     if (d->compilationDb) {
         return true;
     }
+    QElapsedTimer timer;
+    std::cout << "Starting Process Compilation Database" << std::endl;
+    timer.start();
 
     if (!d->compileCommandsJsons.empty()) {
         CombinedCompilationDatabase compDb;
@@ -558,6 +571,8 @@ bool CppTool::processCompilationDatabase()
     d->compilationDb->setup(d->useSystemHeaders,
                             d->constants.userProvidedExtraCompileCommandsArgs,
                             !d->constants.printToConsole);
+
+    std::cout << "Process compilation database finished" << timer.elapsed() << std::endl;
     return true;
 }
 
@@ -651,7 +666,9 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
     if (!ensureSetup()) {
         return false;
     }
-
+    QElapsedTimer timer;
+    std::cout << "Find Physical Entities Started" << std::endl;
+    timer.start();
     bool dbErrorState = false;
 
     const lvtmdb::ObjectStore::State oldState = d->memDb().state();
@@ -714,6 +731,7 @@ bool CppTool::findPhysicalEntities(bool doIncremental)
         d->memDb().setState(lvtmdb::ObjectStore::State::NoneReady);
     }
 
+    std::cout << "Find Physical Entities Finished" << timer.elapsed() << std::endl;
     return true;
 }
 

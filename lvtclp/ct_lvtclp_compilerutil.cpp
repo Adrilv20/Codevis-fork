@@ -20,11 +20,11 @@
 #include <ct_lvtclp_compilerutil.h>
 #include <ct_lvtshr_stringhelpers.h>
 
+#include <QDebug>
 #include <filesystem>
 #include <initializer_list>
+#include <iostream>
 #include <optional>
-
-#include <QDebug>
 
 #include <clang/Frontend/FrontendActions.h>
 #include <clang/Tooling/Tooling.h>
@@ -40,6 +40,7 @@ std::string trimLeadingSpaces(const std::string& str)
 
 std::optional<std::vector<std::string>> tryCompiler(const std::string& compiler)
 {
+    std::cout << "Testing with compiler " << compiler << std::endl;
     std::optional<std::string> compilerOut = Codethink::lvtclp::CompilerUtil::runCompiler(compiler);
     if (!compilerOut) {
         return {};
@@ -71,10 +72,16 @@ std::optional<std::vector<std::string>> tryCompiler(const std::string& compiler)
     return includes;
 }
 
-std::vector<std::string> findLinuxIncludes()
+std::vector<std::string> findLinuxIncludes(const std::string& compileCommandCompiler)
 // run tryCompiler on clang++ or g++ with various version suffixes,
 // returning the first successful result
 {
+    // First try the compiler specified by the compile commands.
+    std::optional<std::vector<std::string>> res = tryCompiler(compileCommandCompiler);
+    if (res) {
+        return std::move(*res);
+    }
+
     // lower versions first because hopefully things are backwards compatible
     std::initializer_list<std::string> suffixes = {
         "-9",
@@ -109,11 +116,12 @@ std::vector<std::string> findLinuxIncludes()
 
 namespace Codethink::lvtclp {
 
-std::vector<std::string> CompilerUtil::findSystemIncludes()
+std::vector<std::string> CompilerUtil::findSystemIncludes(const std::string& compileCommandCompiler)
 {
 #ifndef Q_OS_WINDOWS
-    return findLinuxIncludes();
+    return findLinuxIncludes(compileCommandCompiler);
 #else
+    std::ignore = compileCommandCompiler;
     return {};
 #endif
 }
@@ -132,7 +140,8 @@ std::optional<std::string> CompilerUtil::runCompiler(const std::string& compiler
     // the calling program and the executed command, and shall return a pointer to a stream that can be used to either
     // read from or write to the pipe.
     // https://pubs.opengroup.org/onlinepubs/009696699/functions/popen.html
-    auto fp = popen("g++ -E -v -x c++ - </dev/null 2>&1", "r");
+    const auto compile_call = compiler + " -E -v -x c++ - </dev/null 2>&1";
+    auto fp = popen(compile_call.c_str(), "r");
     if (fp == nullptr) {
         return {};
     }

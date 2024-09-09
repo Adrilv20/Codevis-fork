@@ -41,6 +41,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QtGlobal>
 
 #include <algorithm>
@@ -352,6 +353,7 @@ FileType ClpUtil::categorisePath(const std::string& file)
 const char *const ClpUtil::NON_LAKOSIAN_GROUP_NAME = "non-lakosian group";
 
 struct CombinedCompilationDatabase::Private {
+    std::unordered_map<std::string_view, int> fileNameToCompileCommandsIdx;
     std::vector<clang::tooling::CompileCommand> compileCommands;
     std::vector<std::string> files;
 };
@@ -365,6 +367,9 @@ CombinedCompilationDatabase::~CombinedCompilationDatabase() noexcept = default;
 cpp::result<bool, CompilationDatabaseError>
 CombinedCompilationDatabase::addCompilationDatabase(const std::filesystem::path& path)
 {
+    QElapsedTimer timer;
+    std::cout << "Add Compilation Database Started" << std::endl;
+    timer.start();
     std::string errorMessage;
     std::unique_ptr<clang::tooling::JSONCompilationDatabase> jsonDb =
         clang::tooling::JSONCompilationDatabase::loadFromFile(path.string(),
@@ -374,29 +379,32 @@ CombinedCompilationDatabase::addCompilationDatabase(const std::filesystem::path&
         return cpp::fail(CompilationDatabaseError{CompilationDatabaseError::Kind::ErrorLoadingFromFile, errorMessage});
     }
 
-    if (jsonDb->getAllCompileCommands().size() == 0) {
-        return cpp::fail(CompilationDatabaseError{CompilationDatabaseError::Kind::CompileCommandsContainsNoCommands});
-    }
-
     if (jsonDb->getAllFiles().size() == 0) {
         return cpp::fail(CompilationDatabaseError{CompilationDatabaseError::Kind::CompileCommandsContainsNoFiles});
     }
 
+    std::vector<clang::tooling::CompileCommand> compileCommands = jsonDb->getAllCompileCommands();
+    if (compileCommands.size() == 0) {
+        return cpp::fail(CompilationDatabaseError{CompilationDatabaseError::Kind::CompileCommandsContainsNoCommands});
+    }
+
     const std::filesystem::path buildDir = path.parent_path();
-    addCompilationDatabase(*jsonDb, buildDir);
+    addCompilationDatabase(compileCommands, buildDir);
+    std::cout << "Add Compilation Database finished" << timer.elapsed() << std::endl;
     return {};
 }
 
-void CombinedCompilationDatabase::addCompilationDatabase(const clang::tooling::CompilationDatabase& db,
+void CombinedCompilationDatabase::addCompilationDatabase(std::vector<clang::tooling::CompileCommand>& compileCommands,
                                                          const std::filesystem::path& buildDir)
 {
-    for (clang::tooling::CompileCommand cmd : db.getAllCompileCommands()) {
+    int i = 0;
+    for (clang::tooling::CompileCommand& cmd : compileCommands) {
         // resolve any relative paths
         std::filesystem::path filename(cmd.Filename);
         if (filename.is_relative()) {
             filename = buildDir / filename;
+            cmd.Filename = filename.string();
         }
-        cmd.Filename = filename.string();
 
         auto ext = filename.extension().string();
         if (!allCppExtensions.contains(ext)) {
@@ -405,18 +413,16 @@ void CombinedCompilationDatabase::addCompilationDatabase(const clang::tooling::C
 
         d->files.push_back(cmd.Filename);
         d->compileCommands.push_back(std::move(cmd));
+        d->fileNameToCompileCommandsIdx[cmd.Filename] = i;
+        i += 1;
     }
 }
 
 std::vector<clang::tooling::CompileCommand>
 CombinedCompilationDatabase::getCompileCommands(llvm::StringRef FilePath) const
 {
-    for (auto const& cmd : d->compileCommands) {
-        if (cmd.Filename == FilePath) {
-            return {cmd};
-        }
-    }
-    return {};
+    const int idx = d->fileNameToCompileCommandsIdx[FilePath];
+    return {d->compileCommands.at(idx)};
 }
 
 std::vector<std::string> CombinedCompilationDatabase::getAllFiles() const
