@@ -84,37 +84,37 @@ const std::vector<TypeObject *>& TypeObject::children() const
     return d_children;
 }
 
-const std::vector<TypeObject *>& TypeObject::subclasses() const
+const std::unordered_set<TypeObject *>& TypeObject::subclasses() const
 {
     assertReadable();
     return d_subclasses;
 }
 
-const std::vector<TypeObject *>& TypeObject::superclasses() const
+const std::unordered_set<TypeObject *>& TypeObject::superclasses() const
 {
     assertReadable();
     return d_superclasses;
 }
 
-const std::vector<TypeObject *>& TypeObject::usesInTheInterface() const
+const std::unordered_set<TypeObject *>& TypeObject::usesInTheInterface() const
 {
     assertReadable();
     return d_usesInTheInterface;
 }
 
-const std::vector<TypeObject *>& TypeObject::revUsesInTheInterface() const
+const std::unordered_set<TypeObject *>& TypeObject::revUsesInTheInterface() const
 {
     assertReadable();
     return d_revUsesInTheInterface;
 }
 
-const std::vector<TypeObject *>& TypeObject::usesInTheImplementation() const
+const std::unordered_set<TypeObject *>& TypeObject::usesInTheImplementation() const
 {
     assertReadable();
     return d_usesInTheImplementation;
 }
 
-const std::vector<TypeObject *>& TypeObject::revUsesInTheImplementation() const
+const std::unordered_set<TypeObject *>& TypeObject::revUsesInTheImplementation() const
 {
     assertReadable();
     return d_revUsesInTheImplementation;

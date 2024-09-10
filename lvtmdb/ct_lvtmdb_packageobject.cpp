@@ -74,13 +74,13 @@ const std::vector<ComponentObject *>& PackageObject::components() const
     return d_components;
 }
 
-const std::vector<PackageObject *>& PackageObject::forwardDependencies() const
+const std::unordered_set<PackageObject *>& PackageObject::forwardDependencies() const
 {
     assertReadable();
     return d_forwardDeps;
 }
 
-const std::vector<PackageObject *>& PackageObject::reverseDependencies() const
+const std::unordered_set<PackageObject *>& PackageObject::reverseDependencies() const
 {
     assertReadable();
     return d_reverseDeps;

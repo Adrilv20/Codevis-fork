@@ -49,11 +49,11 @@ class LVTMDB_EXPORT FileObject : public DatabaseObject {
     std::string d_hash;
     // MD5 hash of the file at the time it was added to the database
 
-    std::vector<FileObject *> d_forwardIncludes;
+    std::unordered_set<FileObject *> d_forwardIncludes;
     // Files included by this file
     // Pointers owned by ObjectStore
 
-    std::vector<FileObject *> d_reverseIncludes;
+    std::unordered_set<FileObject *> d_reverseIncludes;
     // Files which include this file
     // Pointers owned by ObjectStore
 
@@ -87,9 +87,9 @@ class LVTMDB_EXPORT FileObject : public DatabaseObject {
 
     [[nodiscard]] const std::string& hash() const;
 
-    [[nodiscard]] const std::vector<FileObject *>& forwardIncludes() const;
+    [[nodiscard]] const std::unordered_set<FileObject *>& forwardIncludes() const;
 
-    [[nodiscard]] const std::vector<FileObject *>& reverseIncludes() const;
+    [[nodiscard]] const std::unordered_set<FileObject *>& reverseIncludes() const;
 
     [[nodiscard]] PackageObject *package() const;
 

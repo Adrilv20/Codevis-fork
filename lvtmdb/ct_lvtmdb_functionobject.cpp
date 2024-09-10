@@ -48,13 +48,13 @@ NamespaceObject *FunctionObject::parent() const
     return d_parent_p;
 }
 
-const std::vector<FunctionObject *>& FunctionObject::callers() const
+const std::unordered_set<FunctionObject *>& FunctionObject::callers() const
 {
     assertReadable();
     return d_callers;
 }
 
-const std::vector<FunctionObject *>& FunctionObject::callees() const
+const std::unordered_set<FunctionObject *>& FunctionObject::callees() const
 {
     assertReadable();
     return d_callees;

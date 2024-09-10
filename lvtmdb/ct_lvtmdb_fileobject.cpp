@@ -58,13 +58,13 @@ const std::string& FileObject::hash() const
     return d_hash;
 }
 
-const std::vector<FileObject *>& FileObject::forwardIncludes() const
+const std::unordered_set<FileObject *>& FileObject::forwardIncludes() const
 {
     assertReadable();
     return d_forwardIncludes;
 }
 
-const std::vector<FileObject *>& FileObject::reverseIncludes() const
+const std::unordered_set<FileObject *>& FileObject::reverseIncludes() const
 {
     assertReadable();
     return d_reverseIncludes;

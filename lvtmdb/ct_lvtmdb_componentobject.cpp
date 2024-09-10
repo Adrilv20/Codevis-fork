@@ -48,13 +48,13 @@ PackageObject *ComponentObject::package() const
     return d_package_p;
 }
 
-const std::vector<ComponentObject *>& ComponentObject::forwardDependencies() const
+const std::unordered_set<ComponentObject *>& ComponentObject::forwardDependencies() const
 {
     assertReadable();
     return d_forwardDeps;
 }
 
-const std::vector<ComponentObject *>& ComponentObject::reverseDependencies() const
+const std::unordered_set<ComponentObject *>& ComponentObject::reverseDependencies() const
 {
     assertReadable();
     return d_reverseDeps;

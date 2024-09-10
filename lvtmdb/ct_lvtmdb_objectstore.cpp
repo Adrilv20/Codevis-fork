@@ -33,6 +33,7 @@
 
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <ct_lvtmdb_soci_reader.h>
 #include <ct_lvtmdb_soci_writer.h>
@@ -659,7 +660,7 @@ QList<std::string> ObjectStore::removeFile(FileObject *file, std::set<intptr_t>&
     std::string key;
     std::vector<NamespaceObject *> namespaces;
     std::vector<TypeObject *> types;
-    std::vector<FileObject *> files;
+    std::unordered_set<FileObject *> files;
     ComponentObject *component = nullptr;
 
     file->withROLock([&] {

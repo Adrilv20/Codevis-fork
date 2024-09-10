@@ -70,7 +70,6 @@ namespace {
 
 bool run_migration(soci::session& db, const QString& schemaPath)
 {
-    qDebug() << "Migration running";
     initialize_resources();
 
     QFile file(schemaPath);
@@ -170,8 +169,8 @@ get_or_add_thing(DbObject *dbobj, soci::session& db, const std::string& table_na
     // that might be empty, currently.
     // so let's this for a while until we fix that.'
     if (dbobj->name().empty() || dbobj->qualifiedName().empty()) {
-        qCDebug(parsing) << "We are looking for something without name and qualified name.\n";
-        qCDebug(parsing) << "returning an empty indicator / null item.\n";
+        qCDebug(parsing) << "We are looking for something without name and qualified name - returning an empty "
+                            "indicator / null item.\n";
         return {0, soci::indicator::i_null};
     }
 

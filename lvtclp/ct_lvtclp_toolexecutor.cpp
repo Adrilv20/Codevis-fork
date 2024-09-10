@@ -61,7 +61,7 @@ class ThreadSafeToolResults : public clang::tooling::ToolResults {
     // MODIFIERS
     void addResult(llvm::StringRef key, llvm::StringRef value) override
     {
-        std::unique_lock<std::mutex> guard(d_mutex);
+        std::lock_guard<std::mutex> guard(d_mutex);
         d_results.addResult(key, value);
     }
 
