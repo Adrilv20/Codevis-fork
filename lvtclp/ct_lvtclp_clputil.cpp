@@ -111,7 +111,7 @@ lvtmdb::PackageObject *getPackageForPath(const std::filesystem::path& path,
                                          lvtmdb::ObjectStore& memDb,
                                          const std::filesystem::path& prefix,
                                          const std::vector<std::filesystem::path>& nonLakosianDirs,
-                                         const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs)
+                                         const std::vector<std::pair<std::regex, std::string>>& thirdPartyDirs)
 // assumes path is already normalised using ClpUtil::normalisePath
 // assumes memDb is already locked for writing
 {
@@ -150,7 +150,7 @@ lvtmdb::PackageObject *getPackageForPath(const std::filesystem::path& path,
 
     bool isMapped = false;
     for (auto const& [mappedPathRegex, mappedGroupName] : thirdPartyDirs) {
-        if (std::regex_search(path.generic_string(), std::regex{mappedPathRegex})) {
+        if (std::regex_search(path.generic_string(), mappedPathRegex)) {
             topLevelPkgQualifiedName = mappedGroupName;
             topLevelPkgName = mappedGroupName;
             isMapped = true;
@@ -233,7 +233,7 @@ lvtmdb::FileObject *ClpUtil::writeSourceFile(const std::string& inFilename,
                                              lvtmdb::ObjectStore& memDb,
                                              const std::filesystem::path& prefix,
                                              const std::vector<std::filesystem::path>& nonLakosianDirs,
-                                             const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs)
+                                             const std::vector<std::pair<std::regex, std::string>>& thirdPartyDirs)
 {
     if (inFilename.empty()) {
         return nullptr;
@@ -395,7 +395,7 @@ CombinedCompilationDatabase::addCompilationDatabase(const std::filesystem::path&
 }
 
 void CombinedCompilationDatabase::addCompilationDatabase(std::vector<clang::tooling::CompileCommand>& compileCommands,
-                                                         const std::filesystem::path& buildDir)
+                                                         const std::filesystem::path& buildDir) const
 {
     int i = 0;
     for (clang::tooling::CompileCommand& cmd : compileCommands) {
@@ -469,10 +469,11 @@ bool ClpUtil::isComponentOnPackageGroup(const std::filesystem::path& componentPa
 
 bool ClpUtil::isComponentOnStandalonePackage(const std::filesystem::path& componentPath)
 {
+    static const auto standalone_regex = std::regex{"/([a-zA-Z]{1,2})_([a-zA-Z0-9_]+)\\."};
+
     // Capture special component naming inside standalone package in the form
     // <prefix>_<pkgname>_<component_name>. e.g.: ct_lvtclp_filesystemscanner.cpp
-    auto hasStandaloneNameWithPkgPrefix =
-        std::regex_search(componentPath.generic_string(), std::regex{"/([a-zA-Z]{1,2})_([a-zA-Z0-9_]+)\\."});
+    auto hasStandaloneNameWithPkgPrefix = std::regex_search(componentPath.generic_string(), standalone_regex);
     if (!hasStandaloneNameWithPkgPrefix) {
         return false;
     }
@@ -548,6 +549,17 @@ std::vector<std::filesystem::path> ClpUtil::ensureCanonical(const std::vector<st
                    });
 
     return canonicalPaths;
+}
+
+std::vector<std::pair<std::regex, std::string>>
+ClpUtil::compilePackageMappings(const std::vector<std::pair<std::string, std::string>>& packageMappings)
+{
+    auto compiled = std::vector<std::pair<std::regex, std::string>>();
+    for (auto& [k, v] : packageMappings) {
+        compiled.emplace_back(std::regex(std::move(k)), std::move(v));
+    }
+
+    return compiled;
 }
 
 namespace detail {

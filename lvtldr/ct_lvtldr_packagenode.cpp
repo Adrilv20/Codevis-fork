@@ -28,7 +28,9 @@ using namespace Codethink;
 
 std::string fixQName(const std::string& qname)
 {
-    return std::regex_replace(qname, std::regex("\\\\"), "/");
+    static const auto regex = std::regex("\\\\");
+
+    return std::regex_replace(qname, regex, "/");
 }
 
 } // namespace

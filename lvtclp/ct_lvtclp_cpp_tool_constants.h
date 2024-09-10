@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <llvm/Support/GlobPattern.h>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -15,7 +16,7 @@ struct CppToolConstants {
     const std::filesystem::path buildPath;
     const std::filesystem::path databasePath;
     const std::vector<std::filesystem::path> nonLakosianDirs;
-    const std::vector<std::pair<std::string, std::string>> thirdPartyDirs;
+    const std::vector<std::pair<std::regex, std::string>> thirdPartyDirs;
     const std::vector<llvm::GlobPattern> ignoreGlobs;
     const std::vector<std::string> userProvidedExtraCompileCommandsArgs;
     const unsigned numThreads = 1;
