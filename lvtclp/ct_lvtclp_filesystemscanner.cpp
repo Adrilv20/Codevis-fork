@@ -73,13 +73,16 @@ struct FoundThingHash {
 
 std::string xxhash(const std::filesystem::path& path)
 {
+    static auto content = std::string();
+
     try {
-        std::ifstream file(path, std::ios::binary);
+        auto file = std::ifstream(path, std::ios::binary);
         if (!file) {
             return "";
         }
 
-        std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        content.clear();
+        std::copy(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>(), std::back_inserter(content));
 
         uint64_t hash_value = llvm::xxh3_64bits(llvm::StringRef(content));
 
@@ -366,7 +369,7 @@ std::string FilesystemScanner::addLakosianSourcePackage(const std::filesystem::p
             auto filePath = QString::fromStdString(path.string());
             auto projectSource = QString::fromStdString(d->constants.prefix.string());
             if (filePath.startsWith(projectSource)) {
-                filePath.replace(projectSource, "${SOURCE_DIR}/");
+                filePath.replace(projectSource, "${SOURCE_DIR}");
             }
             d->foundPkgGrps[qualifiedName] = PackageHelper{"", qualifiedName, filePath.toStdString()};
         }
@@ -379,7 +382,7 @@ std::string FilesystemScanner::addLakosianSourcePackage(const std::filesystem::p
         auto filePath = QString::fromStdString(path.string());
         auto projectSource = QString::fromStdString(d->constants.prefix.string());
         if (filePath.startsWith(projectSource)) {
-            filePath.replace(projectSource, "${SOURCE_DIR}/");
+            filePath.replace(projectSource, "${SOURCE_DIR}");
         }
         d->foundPkgs.emplace_back(FoundPackage{parent, qualifiedName, filePath.toStdString(), ""});
         d->foundPkgNames.insert(std::move(qualifiedName));
