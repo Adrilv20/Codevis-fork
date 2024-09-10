@@ -202,7 +202,7 @@ llvm::Error ToolExecutor::execute(
     std::string errorMsg;
     std::mutex logMutex;
     auto appendError = [&errorMsg, &logMutex](llvm::Twine err) {
-        std::unique_lock<std::mutex> lock(logMutex);
+        std::lock_guard<std::mutex> lock(logMutex);
         errorMsg += err.str();
     };
 

@@ -217,6 +217,24 @@ class LvtCompilationDatabase : public clang::tooling::CompilationDatabase {
     std::unordered_map<std::string, int> fileNameToCompileCommandsIdx;
 };
 
+class FsPathCache {
+  public:
+    static FsPathCache& instance();
+
+    std::filesystem::path get_canonical(const std::filesystem::path& path);
+    std::filesystem::path get_weakly_canonical(const std::filesystem::path& path);
+
+    FsPathCache(const FsPathCache&) = delete;
+    FsPathCache& operator=(const FsPathCache&) = delete;
+
+  private:
+    FsPathCache() = default;
+
+    std::unordered_map<std::filesystem::path, std::filesystem::path> canonical_map;
+    std::unordered_map<std::filesystem::path, std::filesystem::path> weakly_canonical_map;
+    std::mutex mutex;
+};
+
 namespace nonLakosian {
 
 struct LVTCLP_EXPORT ClpUtil {
