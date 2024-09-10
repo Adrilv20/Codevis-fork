@@ -40,65 +40,7 @@ FnId funcDeclToId(const clang::FunctionDecl *decl)
 // To uniquely identify a function we need its template parameters, qualified
 // name and argument types (because of overloading)
 {
-    std::string ret;
-
-    // template parameters
-    if (const clang::FunctionTemplateDecl *templateDecl = decl->getDescribedFunctionTemplate()) {
-        // template declaration
-        ret += "template <";
-        bool first = true;
-        for (const clang::NamedDecl *namedDecl : *templateDecl->getTemplateParameters()) {
-            if (first) {
-                first = false;
-            } else {
-                ret += ", ";
-            }
-
-            ret += "typename ";
-            ret += namedDecl->getQualifiedNameAsString();
-        }
-        ret += "> ";
-    } else if (const auto *spec = decl->getTemplateSpecializationInfo()) {
-        // template specialization
-        ret += "template <";
-        bool first = true;
-        const clang::TemplateArgumentList *list = spec->TemplateArguments;
-        for (unsigned i = 0; i < list->size(); ++i) {
-            if (first) {
-                first = false;
-            } else {
-                ret += ", ";
-            }
-
-            const clang::TemplateArgument& arg = (*list)[i];
-            llvm::raw_string_ostream s(ret);
-            arg.dump(s);
-        }
-        ret += "> ";
-    }
-
-    ret += decl->getQualifiedNameAsString();
-
-    // parameter types
-    ret += '(';
-    bool first = true;
-    for (const clang::ParmVarDecl *param : decl->parameters()) {
-        if (first) {
-            first = false;
-        } else {
-            ret += ", ";
-        }
-
-        ret += param->getType().getAsString();
-    }
-    ret += ')';
-
-    // store hashes of the qualified name string instead of the string itself.
-    // this makes debugging hard but should run much faster and use much less
-    // memory. Otherwise we run out of memory building bde database for
-    // bde/thirdparty/pcre2
-    std::hash<std::string> hash;
-    return hash(ret);
+    return static_cast<FnId>(decl->getGlobalID());
 }
 
 } // end unnamed namespace
