@@ -43,6 +43,7 @@
 #include <vector>
 
 #include <QDebug>
+#include <clang/AST/Type.h>
 
 using namespace Codethink;
 using namespace Codethink::lvtmdb;
@@ -103,7 +104,8 @@ static void printFile(FileObject *file)
         qDebug() << "      " << klass->qualifiedName();
     }
 
-    std::vector<FileObject *> includes = file->forwardIncludes();
+    std::unordered_set<FileObject *> includes_ = file->forwardIncludes();
+    std::vector<FileObject *> includes(includes_.begin(), includes_.end());
     sort(includes);
     if (!includes.empty()) {
         qDebug() << "    INCLUDES:";
@@ -150,8 +152,8 @@ static void printPackage(PackageObject *package)
         qDebug() << "      " << klass->qualifiedName();
     }
 
-    std::vector<PackageObject *> dependencies = package->forwardDependencies();
-
+    std::unordered_set<PackageObject *> dependencies_ = package->forwardDependencies();
+    std::vector<PackageObject *> dependencies(dependencies_.begin(), dependencies_.end());
     sort(dependencies);
     if (!dependencies.empty()) {
         qDebug() << "    DEPENDENCIES:";
@@ -218,7 +220,7 @@ static void printClass(TypeObject *klass)
     }
 
     // Is-A relationships
-    std::vector<TypeObject *> isAs = klass->superclasses();
+    std::unordered_set<TypeObject *> isAs = klass->superclasses();
 
     if (!isAs.empty()) {
         qDebug() << "    IS-A RELATIONSHPS:";
@@ -229,7 +231,8 @@ static void printClass(TypeObject *klass)
         qDebug() << "      " << superClass->qualifiedName();
     }
 
-    std::vector<TypeObject *> usesInInters = klass->usesInTheInterface();
+    std::unordered_set<TypeObject *> usesInInters_ = klass->usesInTheInterface();
+    std::vector<TypeObject *> usesInInters(usesInInters_.begin(), usesInInters_.end());
     sort(usesInInters);
     if (!usesInInters.empty()) {
         qDebug() << "    USES-IN-THE-INTERFACE RELATIONSHIPS:";
@@ -238,7 +241,8 @@ static void printClass(TypeObject *klass)
         qDebug() << "      " << dep->qualifiedName();
     }
 
-    std::vector<TypeObject *> usesInImpls = klass->usesInTheImplementation();
+    std::unordered_set<TypeObject *> usesInImpls_ = klass->usesInTheImplementation();
+    std::vector<TypeObject *> usesInImpls(usesInImpls_.begin(), usesInImpls_.end());
     sort(usesInImpls);
     if (!usesInImpls.empty()) {
         qDebug() << "    USES-IN-THE-IMPLEMENTATION RELATIONSHIPS:";

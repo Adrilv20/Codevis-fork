@@ -137,9 +137,7 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
         }
 
         assert(d_prefix);
-        // std::filesystem::path filePath = std::filesystem::weakly_canonical(*d_prefix / path);
-        std::filesystem::path filePath =
-            Codethink::lvtclp::FsPathCache::instance().get_weakly_canonical(*d_prefix / path);
+        std::filesystem::path filePath = std::filesystem::weakly_canonical(*d_prefix / path);
 
         // the compilation DB only knows about source files, so look for any
         // file which has is the same name, ignoring the extension.
@@ -152,9 +150,7 @@ class LvtCompilationDatabaseImpl : public LvtCompilationDatabase {
     bool containsPackage(const std::string& pkg) const override
     {
         assert(d_prefix);
-        // std::filesystem::path pkgPath = std::filesystem::weakly_canonical(*d_prefix / pkg);
-        std::filesystem::path pkgPath =
-            Codethink::lvtclp::FsPathCache::instance().get_weakly_canonical(*d_prefix / pkg);
+        std::filesystem::path pkgPath = std::filesystem::weakly_canonical(*d_prefix / pkg);
         return d_pkgs.find(pkgPath.string()) != d_pkgs.end();
     }
 };
@@ -241,8 +237,7 @@ class PartialCompilationDatabase : public LvtCompilationDatabaseImpl {
 
         int idx = 0;
         for (auto& cmd : d_compileCommands) {
-            // std::filesystem::path path = std::filesystem::weakly_canonical(cmd.Filename);
-            std::filesystem::path path = Codethink::lvtclp::FsPathCache::instance().get_weakly_canonical(cmd.Filename);
+            std::filesystem::path path = std::filesystem::weakly_canonical(cmd.Filename);
             addPath(path);
             cmd.Filename = path.string();
 
@@ -323,8 +318,7 @@ class SubsetCompilationDatabase : public LvtCompilationDatabaseImpl {
 
         for (const std::string& path : paths) {
             std::filesystem::path fullPath = commonParent / path;
-            // addPath(std::filesystem::weakly_canonical(fullPath));
-            addPath(Codethink::lvtclp::FsPathCache::instance().get_weakly_canonical(fullPath));
+            addPath(std::filesystem::weakly_canonical(fullPath));
         }
 
         shrinkToFit();

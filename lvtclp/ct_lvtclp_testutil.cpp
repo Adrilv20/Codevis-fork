@@ -161,7 +161,7 @@ bool Test_Util::isAExists(const std::string& derivedClassQualifiedName,
     }
 
     // check forward relation
-    std::vector<lvtmdb::TypeObject *> derivedClasses;
+    std::unordered_set<lvtmdb::TypeObject *> derivedClasses;
     base->withROLock([&] {
         derivedClasses = base->subclasses();
     });
@@ -175,7 +175,7 @@ bool Test_Util::isAExists(const std::string& derivedClassQualifiedName,
     }
 
     // check reverse relation
-    std::vector<lvtmdb::TypeObject *> baseClasses;
+    std::unordered_set<lvtmdb::TypeObject *> baseClasses;
     derived->withROLock([&] {
         baseClasses = derived->superclasses();
     });
@@ -207,7 +207,7 @@ bool Test_Util::usesInTheImplementationExists(const std::string& sourceQualified
     }
 
     // check forward relation
-    std::vector<lvtmdb::TypeObject *> rels;
+    std::unordered_set<lvtmdb::TypeObject *> rels;
     source->withROLock([&] {
         rels = source->usesInTheImplementation();
     });
@@ -221,7 +221,7 @@ bool Test_Util::usesInTheImplementationExists(const std::string& sourceQualified
     }
 
     // check reverse relation
-    std::vector<lvtmdb::TypeObject *> revRels;
+    std::unordered_set<lvtmdb::TypeObject *> revRels;
     target->withROLock([&] {
         revRels = target->revUsesInTheImplementation();
     });
@@ -254,7 +254,7 @@ bool Test_Util::usesInTheInterfaceExists(const std::string& sourceQualifiedName,
     }
 
     // check forward relation
-    std::vector<lvtmdb::TypeObject *> rels;
+    std::unordered_set<lvtmdb::TypeObject *> rels;
     source->withROLock([&] {
         rels = source->usesInTheInterface();
     });
@@ -268,7 +268,7 @@ bool Test_Util::usesInTheInterfaceExists(const std::string& sourceQualifiedName,
     }
 
     // check reverse relation
-    std::vector<lvtmdb::TypeObject *> revRels;
+    std::unordered_set<lvtmdb::TypeObject *> revRels;
     target->withROLock([&] {
         revRels = target->revUsesInTheInterface();
     });

@@ -298,8 +298,7 @@ std::string ClpUtil::getRealPath(const clang::SourceLocation& loc, const clang::
         res = pathFromLocation(mgr.getExpansionLoc(loc), mgr);
     }
 
-    return FsPathCache::instance().get_weakly_canonical(res).generic_string();
-    // return std::filesystem::weakly_canonical(res).generic_string();
+    return std::filesystem::weakly_canonical(res).generic_string();
 }
 
 void ClpUtil::writeDependencyRelations(lvtmdb::PackageObject *source, lvtmdb::PackageObject *target)
@@ -434,36 +433,6 @@ std::vector<std::string> CombinedCompilationDatabase::getAllFiles() const
 std::vector<clang::tooling::CompileCommand> CombinedCompilationDatabase::getAllCompileCommands() const
 {
     return d->compileCommands;
-}
-
-FsPathCache& FsPathCache::instance()
-{
-    static FsPathCache cache;
-    return cache;
-}
-
-std::filesystem::path FsPathCache::get_canonical(const std::filesystem::path& path)
-{
-    std::lock_guard<std::mutex> lock(mutex);
-    if (const auto it = canonical_map.find(path); it != canonical_map.end()) {
-        return it->second;
-    } else {
-        auto canonical = std::filesystem::canonical(path);
-        canonical_map.emplace(path, canonical);
-        return canonical;
-    }
-}
-
-std::filesystem::path FsPathCache::get_weakly_canonical(const std::filesystem::path& path)
-{
-    std::lock_guard<std::mutex> lock(mutex);
-    if (const auto it = weakly_canonical_map.find(path); it != weakly_canonical_map.end()) {
-        return it->second;
-    } else {
-        auto weakly_canonical = std::filesystem::weakly_canonical(path);
-        weakly_canonical_map.emplace(path, weakly_canonical);
-        return weakly_canonical;
-    }
 }
 
 long ClpUtil::getThreadId()

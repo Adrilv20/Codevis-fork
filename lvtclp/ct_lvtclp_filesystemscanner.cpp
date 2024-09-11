@@ -184,8 +184,7 @@ void FilesystemScanner::scanHeader(const std::filesystem::path& ppath)
     // design.
     static const std::vector<std::string> headerExtensions({".h", ".hh", ".h++", ".hpp", ""});
 
-    // const std::filesystem::path parent = std::filesystem::weakly_canonical(path.parent_path());
-    const std::filesystem::path parent = FsPathCache::instance().get_weakly_canonical(path.parent_path());
+    const std::filesystem::path parent = std::filesystem::weakly_canonical(path.parent_path());
     const std::filesystem::path stem = path.stem();
 
     const std::vector<clang::tooling::CompileCommand> compileCommands = d->cdb.getCompileCommands(path.string());
@@ -304,6 +303,9 @@ void FilesystemScanner::processFileUsingLakosianRules(const std::filesystem::pat
 void FilesystemScanner::scanPath(const std::filesystem::path& ppath)
 {
     auto path = std::filesystem::path(ppath.generic_string());
+    if (!std::filesystem::is_regular_file(path)) {
+        return;
+    }
 
     if (ClpUtil::isFileIgnored(path.filename().string(), d->constants.ignoreGlobs)) {
         return;
