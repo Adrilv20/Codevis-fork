@@ -30,11 +30,17 @@ macro(AddTargetLibrary)
 
 
     if(DTARGS_LIBRARY_NAME STREQUAL "lvtclp")
-        include_directories(/usr/include/antlr4-runtime)
-        target_include_directories(${DTARGS_LIBRARY_NAME} PUBLIC /usr/include/antlr4-runtime/)
-        # link_directories(/usr/lib64)
-        list(APPEND DTARGS_LIBRARIES /usr/lib64/libantlr4-runtime.so.4.13.0)
-        list(APPEND DTARGS_LIBRARIES /usr/lib64/libantlr4-runtime.so)
+        #
+        set(ANTLR_HEADERS_DIR "${ANTLR_ROOT}/antlr4/runtime/Cpp/run/usr/local/include/antlr4-runtime/")
+        set(ANTLR_LIBS_DIR "${ANTLR_ROOT}/antlr4/runtime/Cpp/run/usr/local/lib64")
+        # set(ANTLR_HEADERS_DIR "/usr/include/antlr4-runtime")
+        # set(ANTLR_LIBS_DIR "/usr/lib64")
+        set(ANTLR_VERSION "4.13.2")
+        add_definitions(-DQT_NO_KEYWORDS)
+        include_directories(${ANTLR_HEADERS_DIR})
+        target_include_directories(${DTARGS_LIBRARY_NAME} PUBLIC ${ANTLR_HEADERS_DIR})
+        # list(APPEND DTARGS_LIBRARIES ${ANTLR_LIBS_DIR}/libantlr4-runtime.so)
+        list(APPEND DTARGS_LIBRARIES ${ANTLR_LIBS_DIR}/libantlr4-runtime.a)
         # message("Those will be linked: ${DTARGS_LIBRARIES}")
 
     endif()

@@ -70,10 +70,10 @@ AddTargetLibrary(
         ct_lvtclp_parse_error_handler.cpp
         # todo move it to a separate CMakeLists file
         java/ct_lvtclp_java_tool.cpp
-        java/Java8Lexer.cpp
-        java/Java8Parser.cpp
-        java/Java8ParserVisitor.cpp
-        java/Java8ParserVisitor.h
+        java/JavaLexer.cpp
+        java/JavaParser.cpp
+        java/JavaParserVisitor.cpp
+        java/JavaParserBaseVisitor.cpp
     HEADERS
         ct_lvtclp_clputil.h
         ct_lvtclp_compilerutil.h
@@ -93,10 +93,10 @@ AddTargetLibrary(
         ct_lvtclp_parse_error_handler.h
         # todo move it to a separate CMakeLists file
         java/ct_lvtclp_java_tool.h
-        java/Java8Lexer.h
-        java/Java8Parser.cpp
-        java/Java8ParserVisitor.h
-        java/Java8ParserBaseVisitor.h
+        java/JavaLexer.h
+        java/JavaParser.cpp
+        java/JavaParserVisitor.h
+        java/JavaParserBaseVisitor.h
     LIBRARIES
         Codethink::lvtmdb
         Codethink::lvtprj
@@ -146,6 +146,8 @@ if (COMPILE_TESTS)
         SOURCES
             ct_lvtclp_testrelationships.t.cpp
     )
+
+    add_lvtclp_test(NAME test_ct_lvtclp_java SOURCES java/ct_lvtclp_java.t.cpp)
 
     add_lvtclp_test(
         NAME test_ct_lvtclp_compilerutil

@@ -114,7 +114,7 @@ else()
 endif()
 
 # todo remove this
-add_definitions(-DQT_NO_KEYWORDS)
+
 
 # Set a default build type if none was specified
 set(default_build_type "Release")

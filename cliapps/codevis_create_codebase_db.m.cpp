@@ -71,10 +71,10 @@
 #pragma pop_macro("slots")
 
 namespace py = pybind11;
-struct PyDefaultGilReleasedContext {
-    py::scoped_interpreter pyInterp;
-    py::gil_scoped_release pyGilDefaultReleased;
-};
+// struct PyDefaultGilReleasedContext {
+//     py::scoped_interpreter pyInterp;
+//     py::gil_scoped_release pyGilDefaultReleased;
+// };
 
 namespace {
 
@@ -465,7 +465,17 @@ int main(int argc, char **argv)
 
 #if 1
     std::cout << "We are doing java";
-    auto j_tool = Codethink::lvtclp_java::Tool(args.sourcePath);
+    auto j_tool = Codethink::lvtclp_java::JavaTool(args.sourcePath);
+    auto sharedObjectStore = std::make_shared<Codethink::lvtmdb::ObjectStore>();
+    j_tool.setSharedMemDb(sharedObjectStore);
+    {
+        Codethink::lvtmdb::SociWriter writer;
+        if (!writer.createOrOpen(args.dbPath.string())) {
+            std::cerr << "Error saving database file to disk\n";
+            return EXIT_FAILURE;
+        }
+        sharedObjectStore->writeToDatabase(writer);
+    }
     // if(Codethink::lvtclp_java::Tool::isJavaProject(args.sourcePath)){
     //     std::cout << "Starting code";
     // }
