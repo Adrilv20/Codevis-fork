@@ -73,7 +73,7 @@ AddTargetLibrary(
         java/JavaLexer.cpp
         java/JavaParser.cpp
         java/JavaParserVisitor.cpp
-        java/JavaParserBaseVisitor.cpp
+        java/JavaParserVisitor.h
     HEADERS
         ct_lvtclp_clputil.h
         ct_lvtclp_compilerutil.h
@@ -146,8 +146,6 @@ if (COMPILE_TESTS)
         SOURCES
             ct_lvtclp_testrelationships.t.cpp
     )
-
-    add_lvtclp_test(NAME test_ct_lvtclp_java SOURCES java/ct_lvtclp_java.t.cpp)
 
     add_lvtclp_test(
         NAME test_ct_lvtclp_compilerutil

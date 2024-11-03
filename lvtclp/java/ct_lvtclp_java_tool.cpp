@@ -30,9 +30,11 @@ void JavaTool::parseProjectIn(const std::filesystem::path& root)
     std::cout << "Parsing project in " << root << "\n";
     auto modules = this->detectModulesIn(root);
     if (modules.empty()) {
+        // parseCode
         this->parseCodeInModule(root);
         return;
     } else {
+        // parseModules
         for (auto module : modules) {
             // todo remove this: only for my case
             if (module.contains("samples"))
@@ -60,10 +62,10 @@ void JavaTool::parseCodeInModule(const std::filesystem::path& root)
     // todo, pick that up from the maven <sourceDirectory> tag
     auto source = this->findCodeDirIn(root);
     for (auto dir_entry : std::filesystem::recursive_directory_iterator(source)) {
+        // todo, add support for other file types
         if (!dir_entry.is_regular_file() || dir_entry.path().extension().empty()) {
             continue;
         }
-        // todo, add support for other file types
         if (dir_entry.path().extension() == ".java") {
             filesToParse.push_back(dir_entry.path());
         } else {
@@ -71,9 +73,22 @@ void JavaTool::parseCodeInModule(const std::filesystem::path& root)
             continue;
         }
     }
-    std::for_each(filesToParse.begin(), filesToParse.end(), [this](auto codeFile) {
-        this->parseJavaFile(codeFile);
+
+    std::for_each(filesToParse.begin(), filesToParse.end(), [this](auto javaFile) {
+        this->parseJavaFile(javaFile);
     });
+}
+
+void JavaTool::parseJavaProject()
+{
+    if (buildSystemOfProject == MAVEN) {
+        for (auto it = mavenModulesPerProfile.begin(); it != mavenModulesPerProfile.end(); it++) {
+            std::string_view currentProfile = it->first;
+            for (auto module : it->second) {
+                parseModule(projectRootInput / module);
+            }
+        }
+    }
 }
 
 void JavaTool::parseModule(const std::filesystem::path& moduleRoot)
@@ -82,7 +97,7 @@ void JavaTool::parseModule(const std::filesystem::path& moduleRoot)
     std::cout << "Parsing module in dir: " << moduleRoot << "\n";
 }
 
-std::vector<QString> JavaTool::detectModulesIn(const std::filesystem::path root)
+std::vector<QString> JavaTool::detectModulesIn(const std::filesystem::path& root)
 {
     std::vector<QString> modules;
     if (buildSystemOfProject == MAVEN) {
@@ -125,7 +140,7 @@ std::vector<QString> JavaTool::detectModulesIn(const std::filesystem::path root)
                             if (mavenModulesPerProfile.contains(currentProfile.toStdString())) {
                                 // just add profile to the vector
                                 mavenModulesPerProfile.at(currentProfile.toStdString())
-                                    .push_back(moduleName.toStdString());
+                                    .push_back(std::move(moduleName.toStdString()));
                             } else {
                                 std::vector<std::string> profileModules;
                                 profileModules.push_back(moduleName.toStdString());
@@ -144,6 +159,8 @@ std::vector<QString> JavaTool::detectModulesIn(const std::filesystem::path root)
         //         std::cout << val << "\n";
         //     }
         // }
+
+        // std::cout << "Created map of profiles: \n" << this->modulesPerProfile << "\n";
         return modules;
     }
     std::cout << "Gradle projects not yet supported";
@@ -171,28 +188,13 @@ bool JavaTool::shouldParseFile(const std::filesystem::path& file)
 
 void JavaTool::parseJavaFile(const std::filesystem::path& javaFile)
 {
-    assert(javaFile.extension() == ".java");
     std::cout << "Parsing file: " << javaFile << "\n";
-    using namespace antlr4;
-    std::ifstream stream;
-    stream.open(javaFile);
-    if (!stream.is_open()) {
-        std::cerr << "Error opening file: " << javaFile << "\n";
-        return;
-    }
-    QElapsedTimer timer;
-    timer.start();
-    ANTLRInputStream input(stream);
-    JavaLexer lexer(&input);
-    CommonTokenStream tokens(&lexer);
-    JavaParser parser(&tokens);
-    tree::ParseTree *tree = parser.compilationUnit();
-    JavaParserBaseVisitor visitor;
-    visitor.visit(tree);
-    std::cout << "Parsing time: " << timer.elapsed() << "ms .\n";
+    JavaParserHelper::parseJavaFile(javaFile);
 }
 
-bool JavaTool::isJavaProject()
+} // namespace Codethink::lvtclp_java
+
+bool Codethink::lvtclp_java::JavaTool::isJavaProject()
 {
     std::cout << "Checking if the given directory is a java project" << "\n";
     std::cout << "Checking at the project root for the files: pom.xml,settings.gradle\n";
@@ -216,6 +218,4 @@ bool JavaTool::isJavaProject()
     }
 
     return false;
-}
-
 } // namespace Codethink::lvtclp_java

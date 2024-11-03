@@ -30,7 +30,7 @@ macro(AddTargetLibrary)
 
 
     if(DTARGS_LIBRARY_NAME STREQUAL "lvtclp")
-        #
+        message("Antlr4 root is: ${ANTLR_ROOT}")
         set(ANTLR_HEADERS_DIR "${ANTLR_ROOT}/antlr4/runtime/Cpp/run/usr/local/include/antlr4-runtime/")
         set(ANTLR_LIBS_DIR "${ANTLR_ROOT}/antlr4/runtime/Cpp/run/usr/local/lib64")
         # set(ANTLR_HEADERS_DIR "/usr/include/antlr4-runtime")

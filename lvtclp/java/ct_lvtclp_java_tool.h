@@ -1,8 +1,6 @@
 #ifndef CT_LVTCLP_JAVA_TOOL_H
 #define CT_LVTCLP_JAVA_TOOL_H
 // #include "lvtclp_java_export.h"
-#include "ct_lvtclp_testutil.h"
-#include "lvtclp_export.h"
 #include <QObject>
 #include <ct_lvtmdb_objectstore.h>
 #include <filesystem>
@@ -10,7 +8,6 @@
 #include <optional>
 #include <vector>
 
-#include "JavaParserVisitor.h"
 #include "antlr4-runtime.h"
 #include "java/JavaLexer.h"
 #include "java/JavaParser.h"
@@ -23,17 +20,17 @@ namespace Codethink::lvtclp_java {
 class LVTCLP_EXPORT JavaParserHelper : QObject {
     Q_OBJECT
   public:
-    static auto parseJavaFile(std::filesystem::path javaFile)
+    static auto parseJavaFile(const std::filesystem::path& javaFile)
     {
         assert(javaFile.extension() == ".java");
         std::cout << "Parsing file: " << javaFile << "\n";
         using namespace antlr4;
         std::ifstream stream;
         stream.open(javaFile);
-        using ReturnType = decltype(std::declval<JavaParserBaseVisitor>().getResult());
+        // using ReturnType = decltype(std::declval<JavaParserBaseVisitor>().getResult());
         if (!stream.is_open()) {
             std::cerr << "Error opening file: " << javaFile << "\n";
-            return ReturnType{};
+            return false;
         }
         QElapsedTimer timer;
         timer.start();
@@ -45,7 +42,7 @@ class LVTCLP_EXPORT JavaParserHelper : QObject {
         JavaParserBaseVisitor visitor;
         visitor.visit(tree);
         std::cout << "Parsing time: " << timer.elapsed() << "ms .\n";
-        return ReturnType{visitor.getResult()};
+        return true;
     }
     struct JField {
         std::string type;
@@ -91,7 +88,6 @@ class LVTCLP_EXPORT JavaTool : QObject {
     };
     ParseStatistics stats{0, 0};
     enum JVM_BUILD_SYSTEM { MAVEN, GRADLE, NOT_JAVA };
-    unsigned int parseTime = 0;
     JVM_BUILD_SYSTEM buildSystemOfProject;
     std::filesystem::path buildFile;
     std::vector<QString> modules;
@@ -119,11 +115,11 @@ You can easily get the same behavior by combining conditions with secondary buil
     bool isJavaProject();
     // different in maven and gradle
     // if there are no maven profiles it is just a get("") -> all modules
-    // empty if leaf module(has code), or a module that contains other modules
-    std::vector<QString> detectModulesIn(const std::filesystem::path root);
+    // true if empty->leaf module(has code), or a module that contains other modules
+    std::vector<QString> detectModulesIn(const std::filesystem::path& root);
     std::optional<QString> sourceDirectory = {};
     void parseModule(const std::filesystem::path& moduleRoot);
-    // void parseJavaProject();
+    void parseJavaProject();
     void parseProjectIn(const std::filesystem::path& root);
     void parseCodeInModule(const std::filesystem::path& root);
     bool shouldParseFile(const std::filesystem::path& file);
