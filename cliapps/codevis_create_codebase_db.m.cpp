@@ -466,6 +466,7 @@ int main(int argc, char **argv)
 #if 1
     std::cout << "We are doing java";
     auto j_tool = Codethink::lvtclp_java::JavaTool(args.sourcePath);
+    j_tool.setSharedMemDb(std::make_shared<Codethink::lvtmdb::ObjectStore>());
     // if(Codethink::lvtclp_java::Tool::isJavaProject(args.sourcePath)){
     //     std::cout << "Starting code";
     // }

@@ -74,27 +74,25 @@ class JavaParserBaseVisitor : public JavaParserVisitor {
         std::cout << "Package: " << ctx->qualifiedName()->getText() << "\n";
 
         auto [child, parent] = getChildAndParentNameFromQualifiedName(ctx->qualifiedName()->getText());
-        // auto *parentPkg = this->db->withRWLock([&]
-        // {
-        //     return this->db->getOrAddPackage(
-        //     /*qualifiedName=*/parent,
-        //     /*name=*/parent,
-        //     /*diskPath=*/this->currentFile,
-        //     /*parent=*/nullptr,
-        //     /*repository=*/nullptr);
-        // });
-        // auto *newPkg = this->db->withRWLock([&] {
-        //     return this->db->getOrAddPackage(
-        //     /*qualifiedName=*/child,
-        //     /*name=*/child,
-        //     /*diskPath=*/this->currentFile,
-        //     /*parent=*/parentPkg,
-        //     /*repository=*/nullptr);
-        //
-        // });
-        // parentPkg->withRWLock([parentPkg,newPkg] {
-        //     parentPkg->addChild(newPkg);
-        // });
+        auto *parentPkg = this->db->withRWLock([&] {
+            return this->db->getOrAddPackage(
+                /*qualifiedName=*/parent,
+                /*name=*/parent,
+                /*diskPath=*/this->currentFile,
+                /*parent=*/nullptr,
+                /*repository=*/nullptr);
+        });
+        auto *newPkg = this->db->withRWLock([&] {
+            return this->db->getOrAddPackage(
+                /*qualifiedName=*/child,
+                /*name=*/child,
+                /*diskPath=*/this->currentFile,
+                /*parent=*/parentPkg,
+                /*repository=*/nullptr);
+        });
+        parentPkg->withRWLock([parentPkg, newPkg] {
+            parentPkg->addChild(newPkg);
+        });
 
         // this->db->getOrAddPackage();
         // this->db->getOrAddPackage(ctx->qualifiedName()->getText(),nonQualifiedName,this->currentFile,nullptr,nullptr);

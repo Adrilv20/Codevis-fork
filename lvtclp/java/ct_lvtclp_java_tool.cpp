@@ -189,7 +189,7 @@ bool JavaTool::shouldParseFile(const std::filesystem::path& file)
 void JavaTool::parseJavaFile(const std::filesystem::path& javaFile)
 {
     std::cout << "Parsing file: " << javaFile << "\n";
-    JavaParserHelper::parseJavaFile(javaFile);
+    JavaParserHelper::parseJavaFile(javaFile, this->memDb());
 }
 
 } // namespace Codethink::lvtclp_java

@@ -20,7 +20,7 @@ namespace Codethink::lvtclp_java {
 class LVTCLP_EXPORT JavaParserHelper : QObject {
     Q_OBJECT
   public:
-    static auto parseJavaFile(const std::filesystem::path& javaFile)
+    static auto parseJavaFile(const std::filesystem::path& javaFile, std::shared_ptr<lvtmdb::ObjectStore> db)
     {
         assert(javaFile.extension() == ".java");
         std::cout << "Parsing file: " << javaFile << "\n";
@@ -40,6 +40,7 @@ class LVTCLP_EXPORT JavaParserHelper : QObject {
         JavaParser parser(&tokens);
         tree::ParseTree *tree = parser.compilationUnit();
         JavaParserBaseVisitor visitor;
+        visitor.setObjectDb(db);
         visitor.visit(tree);
         std::cout << "Parsing time: " << timer.elapsed() << "ms .\n";
         return true;
@@ -72,14 +73,14 @@ class LVTCLP_EXPORT JavaTool : QObject {
     // a profile might be needed or let that be an internal detail
     std::vector<QString> getProjectModules();
     lvtmdb::ObjectStore& getObjectStore();
-    void setSharedMemDb(std::shared_ptr<lvtmdb::ObjectStore> const& sharedMemDb)
+    void setSharedMemDb(std::shared_ptr<lvtmdb::ObjectStore> sharedMemDb)
     {
         this->sharedMemDb = sharedMemDb;
     };
 
   private:
     std::shared_ptr<lvtmdb::ObjectStore> sharedMemDb = nullptr;
-    lvtmdb::ObjectStore localMemDb;
+    std::shared_ptr<lvtmdb::ObjectStore> localMemDb = nullptr;
     // i hope there is not a both case
     // i have not planned for a project that has both but it can be added.
     struct ParseStatistics {
@@ -91,9 +92,9 @@ class LVTCLP_EXPORT JavaTool : QObject {
     JVM_BUILD_SYSTEM buildSystemOfProject;
     std::filesystem::path buildFile;
     std::vector<QString> modules;
-    [[nodiscard]] lvtmdb::ObjectStore& memDb()
+    [[nodiscard]] std::shared_ptr<lvtmdb::ObjectStore> memDb()
     {
-        return sharedMemDb ? *sharedMemDb : localMemDb;
+        return sharedMemDb ? sharedMemDb : localMemDb;
     }
     /* From https://docs.gradle.org/current/userguide/migrating_from_maven.html:
 Which brings us to Maven profiles.
