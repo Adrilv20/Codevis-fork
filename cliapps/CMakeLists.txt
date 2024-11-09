@@ -74,3 +74,5 @@ add_codevis_exec(
         Codethink::lvtshr
         Codethink::lvtldr
     )
+
+add_definitions(-DQT_NO_KEYWORDS)

@@ -113,6 +113,9 @@ else()
     set(KF_MAJOR_VERSION "5")
 endif()
 
+# todo remove this
+
+
 # Set a default build type if none was specified
 set(default_build_type "Release")
 
