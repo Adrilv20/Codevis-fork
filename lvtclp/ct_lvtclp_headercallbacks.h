@@ -27,6 +27,7 @@
 //@SEE_ALSO: clang::PPCallbacks
 
 #include "ct_lvtclp_cpp_tool_constants.h"
+#include <ct_lvtclp_header_callback_fn.h>
 #include <ct_lvtclp_threadstringmap.h>
 #include <ct_lvtmdb_fileobject.h>
 #include <ct_lvtmdb_objectstore.h>
@@ -60,8 +61,7 @@ namespace lvtclp {
 
 class HeaderCallbacks : public clang::PPCallbacks {
   public:
-    using HeaderLocationCallback_f =
-        std::function<void(std::string const& sourceFile, std::string const& includedFile, unsigned lineNo)>;
+    using HeaderLocationCallback_f = Codethink::lvtclp::HeaderLocationCallback_f;
 
   private:
     // Implements clang::PPCallbacks. These callbacks make sure that new files
