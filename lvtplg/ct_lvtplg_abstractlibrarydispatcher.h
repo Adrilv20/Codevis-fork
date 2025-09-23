@@ -87,11 +87,7 @@ class AbstractLibraryDispatcher {
   protected:
     KPluginMetaData metadata()
     {
-#ifdef KDE_FRAMEWORKS_IS_OLD
-        return {};
-#else
         return KPluginMetaData::fromJsonFile(QString::fromStdString(this->metadataFilePath()));
-#endif
     }
 };
 

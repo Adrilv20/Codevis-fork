@@ -762,12 +762,7 @@ void GraphicsView::dropEvent(QDropEvent *event)
 {
     const QString qualNames = event->mimeData()->data("codevis/qualifiednames");
     QStringList qualNameList;
-#ifdef KDE_FRAMEWORKS_IS_OLD
-    qualNameList = qualNames.split(";");
-    qualNameList.removeAll(QString(";"));
-#else
     qualNameList = qualNames.split(";", Qt::SplitBehaviorFlags::SkipEmptyParts);
-#endif
     d->scene->loadEntitiesByQualifiedNameList(qualNameList, mapToScene(event->pos()));
     if (qualNameList.size() > 1) {
         d->scene->reLayout();

@@ -26,11 +26,7 @@
 
 // autogen
 #include <preferences.h>
-#ifdef KDE_FRAMEWORKS_IS_OLD
-#include <ui_ct_lvtqtw_configurationdialog_oldkf5.h>
-#else
 #include <ui_ct_lvtqtw_configurationdialog.h>
-#endif
 
 // Qt
 #include <QDebug>
@@ -39,9 +35,7 @@
 
 // KDE
 #include <KMessageBox>
-#ifndef KDE_FRAMEWORKS_IS_OLD
 #include <KPluginWidget>
-#endif
 #include <QCheckBox>
 #include <ct_lvtshr_debug_categories.h>
 
@@ -101,21 +95,17 @@ ConfigurationDialog::ConfigurationDialog(lvtplg::PluginManager *pluginManager, Q
 {
     d->ui.setupUi(this);
     d->pluginManager = pluginManager;
-#ifndef KDE_FRAMEWORKS_IS_OLD
     d->ui.getNewPlugins->setConfigFile(QStringLiteral("codevis.knsrc"));
-#endif
 
     setWindowTitle("Configure Software");
 
     populateMouseTabOptions();
     load();
 
-#ifndef KDE_FRAMEWORKS_IS_OLD
     connect(d->ui.getNewPlugins,
             &KNSWidgets::Button::dialogFinished,
             this,
             &Codethink::lvtqtw::ConfigurationDialog::getNewScriptFinished);
-#endif
     connect(d->ui.reloadAllPlugins,
             &QPushButton::pressed,
             this,
@@ -290,7 +280,6 @@ void ConfigurationDialog::showEvent(QShowEvent *ev)
 
 void ConfigurationDialog::updatePluginInformation()
 {
-#ifndef KDE_FRAMEWORKS_IS_OLD
     auto plugins = QVector<KPluginMetaData>{};
     QString categoryLabel = "Codevis Plugins";
     for (auto const& metadataFile : d->pluginManager->getPluginsMetadataFilePaths()) {
@@ -309,7 +298,6 @@ void ConfigurationDialog::updatePluginInformation()
                 }
                 plugin->get().setEnabled(enabled);
             });
-#endif
 }
 
 void ConfigurationDialog::loadCategoryFilteringSettings()

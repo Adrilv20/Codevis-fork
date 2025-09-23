@@ -17,8 +17,8 @@
  // limitations under the License.
  */
 
-#ifndef INCLUDED_CT_LVTCLP_HEADERCALLBACKS
-#define INCLUDED_CT_LVTCLP_HEADERCALLBACKS
+#ifndef INCLUDED_CT_LVTCLP_HEADERCALLBACKS_FN
+#define INCLUDED_CT_LVTCLP_HEADERCALLBACKS_FN
 
 #include <functional>
 #include <string>

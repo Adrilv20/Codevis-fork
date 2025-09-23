@@ -1,15 +1,7 @@
 include_directories(SYSTEM ${LLVM_INCLUDE_DIR})
 
-if (${KF_VERSION_MAJOR} EQUAL 5 AND ${KF_VERSION_MINOR} LESS 90)
-    message("Warning: Old KDE Framework version doesn't have KFNewStuffWidgets available. Disabling support.")
-    set(KFNewStuffWidgetsIfAvailable "") # No such library
-
-    # Old KF5 didn't have KNewStuffWidget features, so they are disabled in this .ui file
-    set(CONFIGURATION_DIALOG_UI ct_lvtqtw_configurationdialog_oldkf5.ui)
-else()
-    set(KFNewStuffWidgetsIfAvailable KF${KF_MAJOR_VERSION}::NewStuffWidgets)
-    set(CONFIGURATION_DIALOG_UI ct_lvtqtw_configurationdialog.ui)
-endif()
+set(KFNewStuffWidgetsIfAvailable KF6::NewStuffWidgets)
+set(CONFIGURATION_DIALOG_UI ct_lvtqtw_configurationdialog.ui)
 
 if (ENABLE_FORTRAN_SCANNER)
     set(CTFortranLibsIfAvailable "lvtclp_fortran")

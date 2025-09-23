@@ -10,26 +10,26 @@ set(CodeVisDesktop_SRCS
 )
 
 cmake_language(CALL
-    qt${QT_MAJOR_VERSION}_add_resources
+    qt6_add_resources
     CodeVisDesktop_SRCS
     desktopapp.qrc
 )
 
 cmake_language(CALL
-    qt${QT_MAJOR_VERSION}_wrap_ui
+    qt6_wrap_ui
     CodeVisDesktop_SRCS
     mainwindow.ui
     projectsettingsdialog.ui
 )
 
 set(CODEVIS_DESKTOP_QT_LIBRARIES
-    Qt${QT_MAJOR_VERSION}::Core
-    Qt${QT_MAJOR_VERSION}::Gui
-    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
 )
 
 if (USE_QT_WEBENGINE)
-    set(CODEVIS_DESKTOP_QT_LIBRARIES "${CODEVIS_DESKTOP_QT_LIBRARIES}" Qt${QT_MAJOR_VERSION}::WebEngineWidgets)
+    set(CODEVIS_DESKTOP_QT_LIBRARIES "${CODEVIS_DESKTOP_QT_LIBRARIES}" Qt6::WebEngineWidgets)
 endif()
 
 # Mac and Windows are currently failing on the CI
@@ -39,7 +39,7 @@ if (UNIX AND NOT APPLE)
     )
 
     cmake_language(CALL
-        qt${QT_MAJOR_VERSION}_generate_dbus_interface
+        qt6_generate_dbus_interface
         codevis_dbus_interface.h
         org.codethink.CodeVis.xml
         # Only parse scriptable properties.
@@ -49,14 +49,14 @@ if (UNIX AND NOT APPLE)
     # install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.codethink.CodeVis.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
     cmake_language(CALL
-        qt${QT_MAJOR_VERSION}_add_dbus_adaptor
+        qt6_add_dbus_adaptor
         CodeVisDesktop_DBUS_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/org.codethink.CodeVis.xml
         codevis_dbus_interface.h
         CodeVisDBusInterface # Classname used for the adaptor.
     )
 
-    set(CODEVIS_DESKTOP_QT_LIBRARIES ${CODEVIS_DESKTOP_QT_LIBRARIES} Qt${QT_MAJOR_VERSION}::DBus)
+    set(CODEVIS_DESKTOP_QT_LIBRARIES ${CODEVIS_DESKTOP_QT_LIBRARIES} Qt6::DBus)
 endif()
 
 if (APPLE)
@@ -80,27 +80,20 @@ add_library(codevis_lib STATIC
     ${AppleHeaders_SRCS}
 )
 
-if (${KF_VERSION_MINOR} LESS 90)
-    message("Warning: Old KDE Framework version doesn't have KFNewStuffWidgets available. Disabling support.")
-    set(KFNewStuffWidgetsIfAvailable "") # No such library
-else()
-    set(KFNewStuffWidgetsIfAvailable KF${KF_MAJOR_VERSION}::NewStuffWidgets)
-endif()
+set(KFNewStuffWidgetsIfAvailable KF6::NewStuffWidgets)
 
-if (KF_VERSION_MAJOR STREQUAL "6")
-    set(CODEGEN_LIB Codethink::lvtcgn_adapter)
-endif()
+set(CODEGEN_LIB Codethink::lvtcgn_adapter)
 
 target_link_libraries(
     codevis_lib
 
-    KF${KF_MAJOR_VERSION}::Crash
-    KF${KF_MAJOR_VERSION}::WidgetsAddons
-    KF${KF_MAJOR_VERSION}::XmlGui
-    KF${KF_MAJOR_VERSION}::CoreAddons
-    KF${KF_MAJOR_VERSION}::I18n
-    KF${KF_MAJOR_VERSION}::Notifications
-    KF${KF_MAJOR_VERSION}::NewStuffCore
+    KF6::Crash
+    KF6::WidgetsAddons
+    KF6::XmlGui
+    KF6::CoreAddons
+    KF6::I18n
+    KF6::Notifications
+    KF6::NewStuffCore
     ${KFNewStuffWidgetsIfAvailable}
     ${CODEGEN_LIB}
 
@@ -161,7 +154,7 @@ if (COMPILE_TESTS)
             codevis_lib
             ${SYSTEM_EXTRA_LIBRARIES}
             ${CODEVIS_DESKTOP_QT_LIBRARIES}
-            Qt${QT_MAJOR_VERSION}::Test
+            Qt6::Test
         )
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
     endmacro()
@@ -188,7 +181,7 @@ if (COMPILE_TESTS)
         codevis_lib
         ${SYSTEM_EXTRA_LIBRARIES}
         ${CODEVIS_DESKTOP_QT_LIBRARIES}
-        Qt${QT_MAJOR_VERSION}::Test
+        Qt6::Test
     )
     add_test(NAME test_projectsettingsdialog COMMAND test_projectsettingsdialog)
 endif()
