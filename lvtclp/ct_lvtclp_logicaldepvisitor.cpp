@@ -491,7 +491,7 @@ lvtmdb::TypeObject *LogicalDepVisitor::lookupType(const clang::Decl *decl,
     clang::PrintingPolicy policy(Context->getLangOpts());
     policy.adjustForCPlusPlus();
     policy.FullyQualifiedName = true;
-    policy.PrintCanonicalTypes = false; // canonical-types resolves typedefs
+    policy.PrintAsCanonical = false; // canonical-types resolves typedefs
     policy.IncludeTagDefinition = false;
     policy.PolishForDeclaration = true;
     policy.SuppressTagKeyword = true;
@@ -547,7 +547,7 @@ std::string LogicalDepVisitor::getReturnType(const clang::FunctionDecl *fnDecl)
     clang::PrintingPolicy policy(Context->getLangOpts());
     policy.adjustForCPlusPlus();
     policy.FullyQualifiedName = true;
-    policy.PrintCanonicalTypes = true; // resolves typedefs
+    policy.PrintAsCanonical = true; // resolves typedefs
     policy.IncludeTagDefinition = false;
     policy.PolishForDeclaration = true;
     policy.SuppressTagKeyword = true;

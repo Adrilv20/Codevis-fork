@@ -74,7 +74,8 @@ void DiagnosticConsumer::HandleDiagnostic(clang::DiagnosticsEngine::Level DiagLe
 
     std::string out;
     llvm::raw_string_ostream ss(out);
-    clang::TextDiagnostic textDiag(ss, d->langOpts, new clang::DiagnosticOptions());
+    auto diagnostics = clang::DiagnosticOptions();
+    clang::TextDiagnostic textDiag(ss, d->langOpts, diagnostics);
 
     textDiag.emitDiagnostic(clang::FullSourceLoc(Info.getLocation(), Info.getSourceManager()),
                             DiagLevel,
