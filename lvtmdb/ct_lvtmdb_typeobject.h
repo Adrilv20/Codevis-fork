@@ -27,6 +27,7 @@
 #include <ct_lvtmdb_databaseobject.h>
 
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace Codethink::lvtmdb {
@@ -67,19 +68,19 @@ class LVTMDB_EXPORT TypeObject : public DatabaseObject {
     // C++ types nested inside this type
     // This maps to UserDefinedType::d_revClassnamespace **not** ::d_children
 
-    std::vector<TypeObject *> d_subclasses;
+    std::unordered_set<TypeObject *> d_subclasses;
     // subclasses of this type
     // Maps to UserDefinedType::d_children
 
-    std::vector<TypeObject *> d_superclasses;
+    std::unordered_set<TypeObject *> d_superclasses;
     // superclasses of this type
     // Maps to UserDefinedType::d_parents
 
-    std::vector<TypeObject *> d_usesInTheInterface;
-    std::vector<TypeObject *> d_revUsesInTheInterface;
+    std::unordered_set<TypeObject *> d_usesInTheInterface;
+    std::unordered_set<TypeObject *> d_revUsesInTheInterface;
 
-    std::vector<TypeObject *> d_usesInTheImplementation;
-    std::vector<TypeObject *> d_revUsesInTheImplementation;
+    std::unordered_set<TypeObject *> d_usesInTheImplementation;
+    std::unordered_set<TypeObject *> d_revUsesInTheImplementation;
 
     std::vector<FileObject *> d_files;
     // Soruce files in which this type is defined
@@ -121,14 +122,14 @@ class LVTMDB_EXPORT TypeObject : public DatabaseObject {
     [[nodiscard]] TypeObject *parent() const;
     [[nodiscard]] const std::vector<TypeObject *>& children() const;
 
-    [[nodiscard]] const std::vector<TypeObject *>& subclasses() const;
-    [[nodiscard]] const std::vector<TypeObject *>& superclasses() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& subclasses() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& superclasses() const;
 
-    [[nodiscard]] const std::vector<TypeObject *>& usesInTheInterface() const;
-    [[nodiscard]] const std::vector<TypeObject *>& revUsesInTheInterface() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& usesInTheInterface() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& revUsesInTheInterface() const;
 
-    [[nodiscard]] const std::vector<TypeObject *>& usesInTheImplementation() const;
-    [[nodiscard]] const std::vector<TypeObject *>& revUsesInTheImplementation() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& usesInTheImplementation() const;
+    [[nodiscard]] const std::unordered_set<TypeObject *>& revUsesInTheImplementation() const;
 
     [[nodiscard]] const std::vector<FileObject *>& files() const;
 

@@ -61,7 +61,7 @@ class ThreadSafeToolResults : public clang::tooling::ToolResults {
     // MODIFIERS
     void addResult(llvm::StringRef key, llvm::StringRef value) override
     {
-        std::unique_lock<std::mutex> guard(d_mutex);
+        std::lock_guard<std::mutex> guard(d_mutex);
         d_results.addResult(key, value);
     }
 
@@ -202,7 +202,7 @@ llvm::Error ToolExecutor::execute(
     std::string errorMsg;
     std::mutex logMutex;
     auto appendError = [&errorMsg, &logMutex](llvm::Twine err) {
-        std::unique_lock<std::mutex> lock(logMutex);
+        std::lock_guard<std::mutex> lock(logMutex);
         errorMsg += err.str();
     };
 

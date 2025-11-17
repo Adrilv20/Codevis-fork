@@ -98,24 +98,28 @@ std::string trimTrailingSpaces(const std::string& str)
     return str.substr(0, loc + 1);
 }
 
-template<typename TARGET>
-void searchClangStmtAST(const clang::Stmt *top, std::function<void(const TARGET *)> visitor)
-// Recursively search AST starting at `top`, calling `visitor` on any
-// TARGETs we find
+template<typename TARGET, typename VISITOR>
+void searchClangStmtAST(const clang::Stmt *top, const VISITOR& visitor)
 {
-    if (!top) {
+    if (!top)
         return;
-    }
 
-    auto *target = clang::dyn_cast<TARGET>(top);
-    if (target) {
-        visitor(target);
-    }
+    std::stack<const clang::Stmt *> stack;
+    stack.push(top);
 
-    // recurse into statement children
-    std::for_each(top->child_begin(), top->child_end(), [&visitor](const clang::Stmt *top) {
-        searchClangStmtAST(top, visitor);
-    });
+    while (!stack.empty()) {
+        const clang::Stmt *current = stack.top();
+        stack.pop();
+
+        if (auto *target = clang::dyn_cast<TARGET>(current)) {
+            visitor(target);
+        }
+
+        for (const clang::Stmt *child : current->children()) {
+            if (child)
+                stack.push(child);
+        }
+    }
 }
 
 } // unnamed namespace
@@ -873,7 +877,7 @@ void LogicalDepVisitor::processFreeFunctionDecl(clang::FunctionDecl *functionDec
         auto *calledFunction = this->getOrAddFreeFunctionToDb(callee, calleeSourceFile);
         d_staticFnHandler_p->addCallgraphDep(function, calledFunction);
     };
-    searchClangStmtAST<clang::CallExpr>(functionDecl->getBody(), visitCallExpr);
+    searchClangStmtAST<clang::CallExpr>(functionDecl->getBody(), std::move(visitCallExpr));
 }
 
 bool LogicalDepVisitor::VisitFunctionDecl(clang::FunctionDecl *functionDecl)

@@ -29,6 +29,7 @@
 #include <lvtclp_export.h>
 #include <memory>
 #include <optional>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -94,7 +95,7 @@ struct LVTCLP_EXPORT ClpUtil {
                                                lvtmdb::ObjectStore& memDb,
                                                const std::filesystem::path& prefix,
                                                const std::vector<std::filesystem::path>& nonLakosianDirs,
-                                               const std::vector<std::pair<std::string, std::string>>& thirdPartyDirs);
+                                               const std::vector<std::pair<std::regex, std::string>>& thirdPartyDirs);
 
     static std::string getRealPath(const clang::SourceLocation& loc, const clang::SourceManager& mgr);
     // Fetch ann absolute path to loc (or "")
@@ -121,6 +122,8 @@ struct LVTCLP_EXPORT ClpUtil {
 
     static std::vector<llvm::GlobPattern> stringListToGlobPattern(const std::vector<std::string>& stringList);
     static std::vector<std::filesystem::path> ensureCanonical(const std::vector<std::filesystem::path>& maybeCanonical);
+    static std::vector<std::pair<std::regex, std::string>>
+    compilePackageMappings(const std::vector<std::pair<std::string, std::string>>& packageMappings);
 
     static bool isComponentOnPackageGroup(const std::filesystem::path& componentPath);
     static bool isComponentOnStandalonePackage(const std::filesystem::path& componentPath);
@@ -179,7 +182,7 @@ class LVTCLP_EXPORT CombinedCompilationDatabase : public clang::tooling::Compila
     // Read in a compile_commands.json file from path
 
     void addCompilationDatabase(std::vector<clang::tooling::CompileCommand>& compileCommands,
-                                const std::filesystem::path& buildDir);
+                                const std::filesystem::path& buildDir) const;
     // Add the contents of the compilation database given in as an argument
     // to this one, using the given build directory (the directory from which
     // relative paths in the database should be considered resolved)

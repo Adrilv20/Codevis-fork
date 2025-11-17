@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <string>
 #include <type_traits>
+#include <unordered_set>
 
 namespace Codethink::lvtmdb {
 
@@ -69,8 +70,8 @@ class LVTMDB_EXPORT DatabaseObject : public Lockable {
     template<class DERIVED>
     static void addPeerRelationship(DERIVED *source,
                                     DERIVED *target,
-                                    std::vector<DERIVED *>& sourceList,
-                                    std::vector<DERIVED *>& targetList)
+                                    std::unordered_set<DERIVED *>& sourceList,
+                                    std::unordered_set<DERIVED *>& targetList)
     // add a peer relationship between source and target
     // for example, when adding a package dependency relationship:
     //     DERIVED would be PackageObject
@@ -89,8 +90,8 @@ class LVTMDB_EXPORT DatabaseObject : public Lockable {
         {
             auto lock = source->readOnlyLock();
             (void) lock; // cppcheck
-            const auto it = std::find(sourceList.begin(), sourceList.end(), target);
-            if (it != sourceList.end()) {
+
+            if (sourceList.count(target) > 0) {
                 return;
             }
         }
@@ -99,8 +100,8 @@ class LVTMDB_EXPORT DatabaseObject : public Lockable {
         (void) locks; // cppcheck
 
         // we already checked for duplicates above
-        sourceList.push_back(target);
-        targetList.push_back(source);
+        sourceList.emplace(target);
+        targetList.emplace(source);
     }
 
     template<class DERIVED>
@@ -121,8 +122,8 @@ class LVTMDB_EXPORT DatabaseObject : public Lockable {
         (void) locks; // cppcheck
 
         // we already checked for duplicates above
-        sourceList.erase(std::remove(sourceList.begin(), sourceList.end(), target), sourceList.end());
-        targetList.erase(std::remove(targetList.begin(), targetList.end(), source), targetList.end());
+        sourceList.erase(target);
+        targetList.erase(source);
     }
 };
 

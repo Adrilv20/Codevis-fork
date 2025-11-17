@@ -487,7 +487,7 @@ int main(int argc, char **argv)
                                      .buildPath = args.buildPath,
                                      .databasePath = args.dbPath,
                                      .nonLakosianDirs = ClpUtil::ensureCanonical(args.nonLakosianDirs),
-                                     .thirdPartyDirs = args.packageMappings,
+                                     .thirdPartyDirs = ClpUtil::compilePackageMappings(args.packageMappings),
                                      .ignoreGlobs = ClpUtil::stringListToGlobPattern(args.ignoreList),
                                      .userProvidedExtraCompileCommandsArgs = args.userProvidedExtraCompileCommandsArgs,
                                      .numThreads = args.numThreads,

@@ -248,12 +248,12 @@ void validate_in_disk_db()
     auto comp_a = readerStore.getComponent("root_pkg_a/pkga/comp_a");
     comp_a->withROLock([comp_a, comp_common] {
         REQUIRE(comp_a->forwardDependencies().size() == 1);
-        REQUIRE(comp_a->forwardDependencies()[0] == comp_common);
+        REQUIRE(*comp_a->forwardDependencies().begin() == comp_common);
     });
 
     comp_common->withROLock([comp_common, comp_common_private] {
         REQUIRE(comp_common->forwardDependencies().size() == 1);
-        REQUIRE(comp_common->forwardDependencies()[0] == comp_common_private);
+        REQUIRE(*comp_common->forwardDependencies().begin() == comp_common_private);
     });
 
     REQUIRE(packages.size() == 10);

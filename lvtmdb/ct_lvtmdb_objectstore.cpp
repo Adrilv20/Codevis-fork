@@ -33,6 +33,7 @@
 
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <ct_lvtmdb_soci_reader.h>
 #include <ct_lvtmdb_soci_writer.h>
@@ -45,9 +46,9 @@ typename std::unordered_map<ARGS...>::mapped_type lookup(const std::unordered_ma
 // Attempt a lookup of a pointer-like thing in an unordered_map, if it isn't
 // found, return nullptr
 {
-    try {
-        return cache.at(key);
-    } catch (const std::out_of_range&) {
+    if (cache.contains(key)) {
+        return cache.at(key).get();
+    } else {
         return nullptr;
     }
 }
@@ -58,9 +59,9 @@ OBJECT *lookupByQName(const std::unordered_map<std::string, std::unique_ptr<OBJE
 // but we can't copy construct a unique_ptr. Returning a reference doesn't
 // work because the nullptr return would have nothing to refer to
 {
-    try {
+    if (map.contains(key)) {
         return map.at(key).get();
-    } catch (const std::out_of_range&) {
+    } else {
         return nullptr;
     }
 }
@@ -659,7 +660,7 @@ QList<std::string> ObjectStore::removeFile(FileObject *file, std::set<intptr_t>&
     std::string key;
     std::vector<NamespaceObject *> namespaces;
     std::vector<TypeObject *> types;
-    std::vector<FileObject *> files;
+    std::unordered_set<FileObject *> files;
     ComponentObject *component = nullptr;
 
     file->withROLock([&] {

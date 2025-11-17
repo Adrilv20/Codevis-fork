@@ -817,8 +817,9 @@ bool CppTool::runFull(bool skipPhysical)
     if (!ensureSetup()) {
         return false;
     }
+
     {
-        std::unique_lock<std::mutex> lock(d->executorMutex);
+        std::lock_guard<std::mutex> lock(d->executorMutex);
         if (d->executorCancelled) {
             d->executorCancelled = false;
             return false;
@@ -827,7 +828,7 @@ bool CppTool::runFull(bool skipPhysical)
 
     bool doIncremental = true;
     const lvtmdb::ObjectStore::State oldState = d->memDb().state();
-    if (oldState != lvtmdb::ObjectStore::State ::AllReady) {
+    if (oldState != lvtmdb::ObjectStore::State::AllReady) {
         // the database never contained logical information so we can't do an
         // incremental update
         doIncremental = false;
@@ -877,7 +878,7 @@ bool CppTool::runFull(bool skipPhysical)
 
     bool cancelled = false;
     {
-        std::unique_lock<std::mutex> lock(d->executorMutex);
+        std::lock_guard<std::mutex> lock(d->executorMutex);
         delete d->toolExecutor;
         d->toolExecutor = nullptr;
         cancelled = d->executorCancelled;

@@ -25,6 +25,7 @@
 #include <ct_lvtmdb_databaseobject.h>
 
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace Codethink::lvtmdb {
@@ -54,9 +55,9 @@ class LVTMDB_EXPORT PackageObject : public DatabaseObject {
 
     std::vector<ComponentObject *> d_components;
 
-    std::vector<PackageObject *> d_forwardDeps;
+    std::unordered_set<PackageObject *> d_forwardDeps;
 
-    std::vector<PackageObject *> d_reverseDeps;
+    std::unordered_set<PackageObject *> d_reverseDeps;
 
     std::vector<TypeObject *> d_types;
 
@@ -88,9 +89,9 @@ class LVTMDB_EXPORT PackageObject : public DatabaseObject {
 
     [[nodiscard]] const std::vector<ComponentObject *>& components() const;
 
-    [[nodiscard]] const std::vector<PackageObject *>& forwardDependencies() const;
+    [[nodiscard]] const std::unordered_set<PackageObject *>& forwardDependencies() const;
 
-    [[nodiscard]] const std::vector<PackageObject *>& reverseDependencies() const;
+    [[nodiscard]] const std::unordered_set<PackageObject *>& reverseDependencies() const;
 
     [[nodiscard]] const std::vector<TypeObject *>& types() const;
 

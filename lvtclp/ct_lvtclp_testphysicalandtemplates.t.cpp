@@ -186,7 +186,9 @@ void checkComponent(ComponentObject *real, const ModelComponent& model)
 
     real->withROLock([&] {
         childClasses = real->types();
-        deps = real->forwardDependencies();
+        auto deps_ = real->forwardDependencies();
+        deps = std::vector(deps_.begin(), deps_.end());
+        std::sort(deps.begin(), deps.end());
         files = real->files();
 
         CHECK(real->name() == model.name);
@@ -338,14 +340,14 @@ TEST_CASE_METHOD(PhysicalAndTemplatesFixture, "Physical and Templates")
         // bslma has reverse dep on foobar
         const auto bslmaRevDeps = bslma->reverseDependencies();
         REQUIRE(bslmaRevDeps.size() == 1);
-        CHECK(bslmaRevDeps.front() == foobar);
+        CHECK(*bslmaRevDeps.begin() == foobar);
     });
 
     foobar->withROLock([&] {
         // foobar depends on bslma
         const auto foobarDeps = foobar->forwardDependencies();
         REQUIRE(foobarDeps.size() == 1);
-        CHECK(foobarDeps.front() == bslma);
+        CHECK(*foobarDeps.begin() == bslma);
         // foobar has no reverse dependencies
         CHECK(foobar->reverseDependencies().empty());
     });

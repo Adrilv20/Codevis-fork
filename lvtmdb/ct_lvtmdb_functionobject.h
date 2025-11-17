@@ -25,7 +25,7 @@
 #include <ct_lvtmdb_functionbase.h>
 
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace Codethink::lvtmdb {
 
@@ -45,8 +45,8 @@ class LVTMDB_EXPORT FunctionObject : public FunctionBase {
     NamespaceObject *d_parent_p;
     // Immediate parent namespace
 
-    std::vector<FunctionObject *> d_callees;
-    std::vector<FunctionObject *> d_callers;
+    std::unordered_set<FunctionObject *> d_callees;
+    std::unordered_set<FunctionObject *> d_callers;
 
   public:
     // CREATORS
@@ -65,8 +65,8 @@ class LVTMDB_EXPORT FunctionObject : public FunctionBase {
 
     // ACCESSORS
     [[nodiscard]] NamespaceObject *parent() const;
-    [[nodiscard]] const std::vector<FunctionObject *>& callers() const;
-    [[nodiscard]] const std::vector<FunctionObject *>& callees() const;
+    [[nodiscard]] const std::unordered_set<FunctionObject *>& callers() const;
+    [[nodiscard]] const std::unordered_set<FunctionObject *>& callees() const;
 
     // CLASS METHODS
     static void addDependency(FunctionObject *source, FunctionObject *target);

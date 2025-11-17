@@ -26,12 +26,14 @@ namespace Codethink::lvtclp {
 
 bool FileUtil::pathStartsWith(const std::filesystem::path& prefix, const std::filesystem::path& path)
 {
-    // Avoid using the path object for mismatch since trailling '/' may not be considered
-    auto prefixStr = prefix.string();
-    auto pathStr = path.string();
-    const auto [it1, _] = std::mismatch(prefixStr.begin(), prefixStr.end(), pathStr.begin(), pathStr.end());
-    // the whole of prefix matches path (which may be longer)
-    return it1 == prefixStr.end();
+    if (prefix.empty()) {
+        return true;
+    }
+
+    std::string_view prefixStr = prefix.native();
+    std::string_view pathStr = path.native();
+
+    return pathStr.size() >= prefixStr.size() && pathStr.compare(0, prefixStr.size(), prefixStr) == 0;
 }
 
 std::filesystem::path FileUtil::nonPrefixPart(const std::filesystem::path& prefix, const std::filesystem::path& path)
