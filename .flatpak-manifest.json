@@ -8,7 +8,9 @@
         "org.freedesktop.Sdk.Extension.llvm18"
     ],
     "command": "codevis_desktop",
-    "tags": ["nightly"],
+    "tags": [
+        "nightly"
+    ],
     "desktop-file-name-suffix": " (Nightly)",
     "finish-args": [
         "--device=dri",
@@ -25,8 +27,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://libzip.org/download/libzip-1.10.1.tar.xz",
-                    "sha256": "dc3c8d5b4c8bbd09626864f6bcf93de701540f761d76b85d7c7d710f4bd90318",
+                    "url": "https://libzip.org/download/libzip-1.11.4.tar.xz",
+                    "sha256": "8a247f57d1e3e6f6d11413b12a6f28a9d388de110adc0ec608d893180ed7097b",
                     "x-checker-data": {
                         "type": "anitya",
                         "project-id": 10649,
@@ -60,7 +62,10 @@
                 "-DLLVM_DIR=/usr/lib/sdk/llvm18/lib/cmake/llvm"
             ],
             "sources": [
-                { "type": "dir", "path": "." }
+                {
+                    "type": "dir",
+                    "path": "."
+                }
             ]
         }
     ]
