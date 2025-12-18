@@ -2,10 +2,10 @@
     "id": "org.kde.codevis",
     "branch": "master",
     "runtime": "org.kde.Platform",
-    "runtime-version": "6.7",
+    "runtime-version": "6.9",
     "sdk": "org.kde.Sdk",
     "sdk-extensions": [
-        "org.freedesktop.Sdk.Extension.llvm18"
+        "org.freedesktop.Sdk.Extension.llvm19"
     ],
     "command": "codevis_desktop",
     "tags": ["nightly"],
@@ -57,7 +57,7 @@
                 "-DBUILD_WITH_QT6=ON",
                 "-DCOMPILE_TESTS=OFF",
                 "-DUSE_QT_WEBENGINE=OFF",
-                "-DLLVM_DIR=/usr/lib/sdk/llvm18/lib/cmake/llvm"
+                "-DLLVM_DIR=/usr/lib/sdk/llvm19/lib/cmake/llvm"
             ],
             "sources": [
                 { "type": "dir", "path": "." }
