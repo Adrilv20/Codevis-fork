@@ -1,8 +1,10 @@
+# Disclaimer
+This is a copy made for the sake of learning and customizing for personal use. The original project can be found at 
+https://invent.kde.org/sdk/codevis
+-----------------
+
+
 # Codevis
-
-![Codevis](doc/images/mainwindow.png)
-
-[![build status](https://invent.kde.org/sdk/codevis/badges/master/pipeline.svg)](https://invent.kde.org/sdk/codevis/-/pipelines/?ref=master)
 
 Codevis is an analysis and visualization tool designed to assist in code maintenance for C++ codebases.
 
